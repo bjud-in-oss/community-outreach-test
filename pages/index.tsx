@@ -1,7 +1,16 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useState } from 'react';
 
 const Home: NextPage = () => {
+  const [status, setStatus] = useState('');
+
+  const handleStatusCheck = async () => {
+    const res = await fetch('/api/status');
+    const data = await res.json();
+    setStatus(data.message);
+  };
+
   return (
     <div>
       <Head>
@@ -14,6 +23,8 @@ const Home: NextPage = () => {
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        <button onClick={handleStatusCheck}>Force Status Check</button>
+        {status && <p>{status}</p>}
       </main>
     </div>
   );
