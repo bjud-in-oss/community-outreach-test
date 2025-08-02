@@ -19,4 +19,16 @@ const Home: NextPage = () => {
   );
 };
 
+export const getStaticProps = async ({ preview = false }) => {
+  if (preview) {
+    console.log('Preview mode is on');
+  }
+
+  return {
+    props: {
+      preview,
+    },
+  };
+};
+
 export default Home;
