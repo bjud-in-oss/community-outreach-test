@@ -14,8 +14,6 @@ const Home: NextPage = () => {
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        <h2>This is a new heading from the main branch.</h2>
-        {/* This is a test comment */}
         {/* This is a test comment */}
       </main>
     </div>
