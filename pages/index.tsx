@@ -14,6 +14,7 @@ const Home: NextPage = () => {
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        {/* This is a test comment */}
       </main>
     </div>
   );
