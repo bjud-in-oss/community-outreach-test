@@ -12,7 +12,7 @@ const Home: NextPage = () => {
 
       <main>
         <h1>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a href="https://nextjs.org">Next.js!</a> - Community Outreach Test
         </h1>
         {/* This is a test comment */}
       </main>
