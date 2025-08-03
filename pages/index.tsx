@@ -1,7 +1,15 @@
-import type { NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
+import PreviewBanner from '../components/PreviewBanner';
 
-const Home: NextPage = () => {
+type Props = {
+  preview: boolean;
+};
+
+const Home: NextPage<Props> = ({ preview }) => {
+  const previewUrl =
+    typeof window !== 'undefined' ? window.location.href : '';
+
   return (
     <div>
       <Head>
@@ -10,13 +18,26 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      {preview && <PreviewBanner previewUrl={previewUrl} />}
+
       <main>
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        {preview && (
+          <a href="/api/exit-preview">
+            <button>Exit Preview Mode</button>
+          </a>
+        )}
       </main>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ preview = false }) => {
+  return {
+    props: { preview },
+  };
 };
 
 export default Home;
