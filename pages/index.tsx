@@ -14,6 +14,10 @@ const Home: NextPage = () => {
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+
+        <p>
+          <a href="/implementation-guide">View the Master Implementation Guide</a>
+        </p>
       </main>
     </div>
   );
