@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import TaskList from '../components/TaskList';
 
 const Home: NextPage = () => {
   return (
@@ -11,9 +12,8 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <h1>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <h1 className="text-2xl font-bold mb-4">Local Development Dashboard</h1>
+        <TaskList />
       </main>
     </div>
   );
