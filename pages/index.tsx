@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { add } from '../utils/math';
 
 const Home: NextPage = () => {
   return (
@@ -15,7 +14,13 @@ const Home: NextPage = () => {
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        <p>1 + 2 = {add(1, 2)}</p>
+
+        <section>
+          <h2>Community Outreach</h2>
+          <p>
+            We are committed to fostering a strong and inclusive community.
+          </p>
+        </section>
       </main>
     </div>
   );
