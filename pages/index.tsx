@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { greet } from '../lib/greeting';
 
 const Home: NextPage = () => {
   return (
@@ -12,7 +13,7 @@ const Home: NextPage = () => {
 
       <main>
         <h1>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          {greet()}
         </h1>
       </main>
     </div>
