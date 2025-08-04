@@ -1,5 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Home: NextPage = () => {
   return (
@@ -10,12 +12,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Header />
       <main>
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        {/* This is a test comment */}
       </main>
+      <Footer />
     </div>
   );
 };
