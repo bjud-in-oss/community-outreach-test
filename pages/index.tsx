@@ -1,39 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
-
-async function sendContactMessage(message) {
-  const response = await fetch('/api/contact', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to send message');
-  }
-  return response.json();
-}
 
 const Home: NextPage = () => {
-  const [status, setStatus] = useState('idle');
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setStatus('sending');
-    try {
-      await sendContactMessage({
-        name: event.target.name.value,
-        email: event.target.email.value,
-        message: event.target.message.value,
-      });
-      setStatus('success');
-    } catch (error) {
-      console.error(error);
-      setStatus('error');
-    }
-  };
   return (
     <div>
       <Head>
@@ -46,25 +14,6 @@ const Home: NextPage = () => {
         <h1>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" required />
-          </div>
-          <div>
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" required />
-          </div>
-          <div>
-            <label htmlFor="message">Message</label>
-            <textarea id="message" required />
-          </div>
-          <button type="submit" disabled={status === 'sending'}>
-            {status === 'sending' ? 'Sending...' : 'Send'}
-          </button>
-        </form>
-        {status === 'success' && <p>Message sent successfully!</p>}
-        {status === 'error' && <p>Failed to send message.</p>}
       </main>
     </div>
   );
