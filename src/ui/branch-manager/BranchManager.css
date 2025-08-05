@@ -1,0 +1,17 @@
+.branch-manager {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.branch-view {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.branch-view h3 {
+  margin: 0;
+}
