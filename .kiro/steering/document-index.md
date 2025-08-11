@@ -34,6 +34,7 @@
 223_📊🔵_COMPREHENSIVE_TOOLS_ANALYSIS_240808_01,11,13.md  20+ verktyg för multi-platform
 224_🎨🔵_WYSIWYG_INTEGRATION_ANALYSIS_240811_01,40.md     Senior-friendly visual editor (ÅTERSTÄLLD)
 225_🔄🔵_PREVIEW_MERGE_STRATEGY_REFERENCE_240811_01.md    Merge preview strategi för v1.15 (ÅTERSTÄLLD)
+225.1_🔄🔵_HYBRID_MERGE_STRATEGY_240811_15.md              v1.15 + Preview hybrid för senior-godkännande
 
 # Repository & Workflow
 130_🔧🔵_KIRO_DEVELOPMENT_STRATEGY_240808_01,31.md        Utvecklingsverktyg vs slutprodukt

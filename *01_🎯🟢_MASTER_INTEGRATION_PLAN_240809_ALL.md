@@ -7,6 +7,7 @@
 - **🎭 [Conscious Agent Deep Dive](10_🎭_CONSCIOUS_AGENT_DEEP_DIVE.md)** - Djupanalys av medvetna rondellen *(SKAPAS)*
 - **⚙️ [Core Agent Deep Dive](11_⚙️_CORE_AGENT_DEEP_DIVE.md)** - Teknisk implementation av kärn-agent *(SKAPAS)*
 - **🌉 [Communication Bridge Deep Dive](12_🌉_COMMUNICATION_BRIDGE_DEEP_DIVE.md)** - Integration och guardrails *(SKAPAS)*
+- **🔄 [Hybrid Merge Strategy](225.1_🔄_HYBRID_MERGE_STRATEGY.md)** - v1.15 AI + Senior-godkännande *(NY REKOMMENDATION)*
 
 ### **🔍 Specialistkunskap & Research:**
 - **🏛️ [Church Technology Analysis](20_🏛️_CHURCH_TECHNOLOGY_ANALYSIS.md)** - Kyrkteknik och realtidsöversättning
@@ -17,6 +18,35 @@
 ### **⚙️ Steering & Säkerhet:**
 - **🔗 [Dual Consciousness Architecture](31_🧠_DUAL_CONSCIOUSNESS_ARCHITECTURE.md)** - Dokumenthantering och dual sessions
 - **📋 [Next Immediate Actions](03_📋_NEXT_IMMEDIATE_ACTIONS.md)** - Aktuella åtgärder och prioriteringar
+
+---
+
+## 🔄 **HYBRID MERGE STRATEGY - REKOMMENDERAD LÖSNING**
+
+### **🎯 Intelligent AI + Senior-Kontroll**
+**Kärnkoncept:** v1.15 AI gör alla tekniska beslut → Samlar till "Release Candidate" → Senior godkänner slutprodukt
+
+```typescript
+// Hybrid-flöde för senior-vänlig utveckling
+const hybridMergeFlow = {
+  phase1: "v1.15 AI processar alla tekniska ändringar (dolt från senior)",
+  phase2: "AI skapar Release Candidate med senior-vänlig sammanfattning", 
+  phase3: "Senior ser bara: 'Ny version redo - godkänn?' med visuell demo",
+  phase4: "Senior väljer: Godkänn/Testa först/Behåll nuvarande/Schemalägg"
+};
+```
+
+**🟢 Fördelar:**
+- **AI-intelligens**: v1.15 fattar alla tekniska beslut automatiskt
+- **Senior-kontroll**: Godkänner slutprodukt utan tekniska detaljer
+- **Flytande gräns**: 1-100 ändringar samlas till en godkännande-session
+- **Batch-flexibilitet**: Tidsbaserat, funktionsbaserat eller riskbaserat
+- **Säkerhet**: Automatiska guardrails + mänsklig final approval
+
+**📋 Relaterade dokument:**
+- **🔄 [Hybrid Merge Strategy](225.1_🔄_HYBRID_MERGE_STRATEGY.md)** - Detaljerad implementation
+- **🤖 [v1.15 Intelligent Merge System](v1.15_🤖_INTELLIGENT_MERGE_SYSTEM.md)** - AI-grund
+- **🔄 [Preview Merge Strategy](225_🔄_PREVIEW_MERGE_STRATEGY.md)** - Alternativ för utvecklare
 
 ---
 

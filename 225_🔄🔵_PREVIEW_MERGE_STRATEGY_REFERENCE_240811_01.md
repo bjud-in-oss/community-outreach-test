@@ -17,6 +17,52 @@ Vi behöver en säker metod för att förhandsgranska merge-operationer innan de
 - **Rollback capability** - Enkelt att ångra om något går fel
 - **Chunk-by-chunk approval** - Godkänn varje ändring individuellt
 
+---
+
+## ⚖️ **FÖRDELAR OCH NACKDELAR ANALYS**
+
+### **🟢 FÖRDELAR:**
+- **Maximal säkerhet** - Aldrig oväntade ändringar
+- **Full kontroll** - Kan granska varje ändring individuellt
+- **Rollback-säkerhet** - Enkelt att ångra om något går fel
+- **Risk assessment** - Kategoriserar ändringar efter risk-nivå
+- **Transparent process** - Ser exakt vad som kommer hända
+- **Chunk-by-chunk** - Kan godkänna delar och avslå andra
+- **Dokumentation** - Alla beslut dokumenteras för framtiden
+
+### **🔴 NACKDELAR:**
+- **Mycket långsam** - Kräver manuell granskning av varje ändring
+- **Komplex process** - Många steg och validering krävs
+- **Inte automatiserad** - Kräver konstant mänsklig intervention
+- **Rigid approach** - Samma tunga process oavsett ändringens komplexitet
+- **Ingen AI-intelligens** - Fattar inte smarta beslut baserat på kontext
+- **Utvecklingsbottleneck** - Kan bromsa utvecklingshastigheten drastiskt
+- **Teknisk exponering** - Användare ser tekniska detaljer (git diffs, etc.)
+- **Merge fatigue** - Risk för att användare godkänner utan att granska
+
+### **🤔 JÄMFÖRELSE MED ALTERNATIV:**
+
+#### **vs v1.15 Intelligent System:**
+- **Preview**: Manuell säkerhet, långsam, rigid
+- **v1.15**: AI-intelligens, snabb, adaptiv men teknisk
+
+#### **vs Hybrid Strategy (225.1):**
+- **Preview**: Teknisk exponering, manuell process
+- **Hybrid**: Senior-vänlig, AI-intelligens + mänsklig kontroll
+
+### **📊 ANVÄNDNINGSFALL:**
+**Preview Strategy är BÄT för:**
+- Kritiska system-ändringar
+- När full transparens krävs
+- Utvecklare som vill se tekniska detaljer
+- Situationer där säkerhet > hastighet
+
+**Preview Strategy är DÅLIG för:**
+- Senior-användare (för teknisk)
+- Snabb utveckling (för långsam)
+- Många små ändringar (för rigid)
+- Automatiserade workflows (för manuell)
+
 ## 🛠️ **TEKNISK IMPLEMENTATION**
 
 ### **Preview Generation Process:**
