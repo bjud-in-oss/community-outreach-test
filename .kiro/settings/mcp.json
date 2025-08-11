@@ -1,0 +1,53 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "fetch"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "filesystem": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-filesystem"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "read_file",
+        "write_file",
+        "list_directory"
+      ]
+    },
+    "memory": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-memory"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": true,
+      "autoApprove": [
+        "store_memory",
+        "retrieve_memory",
+        "search_memory"
+      ]
+    }
+  }
+}

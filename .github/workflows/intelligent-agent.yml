@@ -1,0 +1,190 @@
+name: Intelligent Jules Agent
+
+on:
+  # Kör varje 30 minuter
+  schedule:
+    - cron: '*/30 * * * *'
+  
+  # Kör när issues uppdateras
+  issues:
+    types: [opened, edited, labeled, unlabeled]
+  
+  # Manuell trigger
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Prompt for the intelligent agent'
+        required: true
+        default: 'Monitor and assist Jules tasks'
+      proximity_goal:
+        description: 'Proximity goal'
+        required: false
+        default: 'build_user_connection'
+
+jobs:
+  intelligent-roundabout:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'jules-automation-test/package.json'
+    
+    - name: Install dependencies
+      run: |
+        cd jules-automation-test
+        npm ci
+    
+    - name: Load previous experiences
+      uses: actions/cache@v3
+      with:
+        path: |
+          jules-automation-test/roundabout-experiences.json
+          jules-automation-test/intelligent-resolver-memory.json
+        key: intelligent-agent-memory-${{ github.run_number }}
+        restore-keys: |
+          intelligent-agent-memory-
+    
+    - name: Run Intelligent Roundabout
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: |
+        cd jules-automation-test
+        
+        # Bestäm prompt baserat på trigger
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          PROMPT="${{ github.event.inputs.prompt }}"
+          PROXIMITY_GOAL="${{ github.event.inputs.proximity_goal }}"
+        elif [ "${{ github.event_name }}" = "issues" ]; then
+          PROMPT="Handle issue update: ${{ github.event.issue.title }}"
+          PROXIMITY_GOAL="resolve_user_issue"
+        else
+          PROMPT="Scheduled monitoring and assistance"
+          PROXIMITY_GOAL="maintain_system_health"
+        fi
+        
+        echo "Running with prompt: $PROMPT"
+        echo "Proximity goal: $PROXIMITY_GOAL"
+        
+        # Kör intelligent agent med timeout
+        timeout 25m node -e "
+          import IntelligentRoundabout from './intelligent-roundabout.js';
+          
+          const agent = new IntelligentRoundabout({
+            repo: {
+              owner: 'MatRen74',
+              repo: 'community-outreach-platform'
+            }
+          });
+          
+          // Ladda erfarenheter
+          await agent.loadExperiences();
+          
+          // Kör rondell
+          await agent.enterRoundabout('$PROMPT', '$PROXIMITY_GOAL');
+          
+          console.log('✅ Intelligent Roundabout completed successfully');
+        " || echo "⚠️ Agent completed with timeout (normal for scheduled runs)"
+    
+    - name: Save experiences
+      if: always()
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          jules-automation-test/roundabout-experiences.json
+          jules-automation-test/intelligent-resolver-memory.json
+        key: intelligent-agent-memory-${{ github.run_number }}
+    
+    - name: Report status
+      if: always()
+      run: |
+        echo "## Intelligent Agent Run Report" >> $GITHUB_STEP_SUMMARY
+        echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Time**: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -f "jules-automation-test/roundabout-experiences.json" ]; then
+          echo "- **Experiences**: Saved successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- **Experiences**: No new experiences" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # Backup job för att säkerställa kontinuitet
+  health-check:
+    runs-on: ubuntu-latest
+    needs: intelligent-roundabout
+    if: always()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'jules-automation-test/package.json'
+    
+    - name: Install dependencies
+      run: |
+        cd jules-automation-test
+        npm ci
+    
+    - name: Health check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: |
+        cd jules-automation-test
+        
+        # Kör grundläggande hälsokontroll
+        node -e "
+          import GitHubCommunicationTest from './test-github-communication.js';
+          
+          const tester = new GitHubCommunicationTest();
+          
+          console.log('🏥 Running health check...');
+          
+          // Test 1: Kontrollera GitHub anslutning
+          const issueTest = await tester.testFindJulesIssues();
+          
+          if (issueTest.success) {
+            console.log('✅ GitHub connection healthy');
+            console.log(\`📊 Found \${issueTest.issues.length} Jules issues\`);
+          } else {
+            console.log('❌ GitHub connection issues');
+            process.exit(1);
+          }
+          
+          // Test 2: Analysera Jules mönster
+          const patternTest = await tester.testAnalyzeJulesPatterns();
+          
+          if (patternTest.success) {
+            console.log('✅ Jules pattern analysis successful');
+            console.log(\`📈 Analyzed \${patternTest.patterns.totalIssues} total issues\`);
+          } else {
+            console.log('⚠️ Pattern analysis had issues, but continuing...');
+          }
+          
+          console.log('🏥 Health check completed');
+        "
+    
+    - name: Create health report
+      if: always()
+      run: |
+        echo "## System Health Report" >> $GITHUB_STEP_SUMMARY
+        echo "- **Main Agent**: ${{ needs.intelligent-roundabout.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Health Check**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Timestamp**: $(date)" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.intelligent-roundabout.result }}" = "failure" ]; then
+          echo "⚠️ **Alert**: Main agent failed, but health check provides backup monitoring" >> $GITHUB_STEP_SUMMARY
+        fi

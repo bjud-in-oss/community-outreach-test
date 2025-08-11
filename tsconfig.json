@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/conscious-agent/*": ["./src/conscious-agent/*"],
+      "@/core-agent/*": ["./src/core-agent/*"],
+      "@/communication-bridge/*": ["./src/communication-bridge/*"],
+      "@/infrastructure/*": ["./src/infrastructure/*"],
+      "@/legacy-import/*": ["./src/legacy-import/*"],
+      "@/shared/*": ["./src/shared/*"]
+    },
+    "types": ["node", "jest"],
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/**/*",
+    "tests/**/*",
+    "setup-documentation-system.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "jules-automation-test/node_modules"
+  ]
+}
