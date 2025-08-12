@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/infrastructure/vercel-functions/server.js",
   "scripts": {
-    "dev": "nodemon src/legacy-import/infrastructure/server.ts",
+    "dev": "nodemon --exec \"node --loader ts-node/esm\" src/core-agent/tools/jules-tool/simple-server.ts",
     "build": "tsc",
     "start": "node dist/src/infrastructure/vercel-functions/server.js",
     "test": "jest",
@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.8.0",
-    "@langchain/community": "^0.1.0",
-    "@langchain/core": "^0.1.0",
+    "@langchain/community": "^0.2.0",
+    "@langchain/core": "^0.2.0",
     "@octokit/rest": "^20.0.0",
     "@supabase/supabase-js": "^2.39.0",
     "@tiptap/react": "^2.1.0",
@@ -40,7 +40,7 @@
     "dotenv": "^16.3.0",
     "express": "^4.18.0",
     "groq-sdk": "^0.8.0",
-    "langchain": "^0.1.0",
+    "langchain": "^0.2.0",
     "llamaindex": "^0.10.0",
     "next": "^14.0.0",
     "react": "^18.2.0",

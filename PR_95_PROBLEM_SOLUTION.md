@@ -1,167 +1,65 @@
-# 🔧 PR #95 PROBLEM SOLUTION
-*Löser den verkliga orsaken till PR #95-loopen*
+# 🚨 PR #95 PROBLEM & SOLUTION - KRITISK INFORMATION FÖR KALLSTART
 
-## 🎯 **PROBLEMANALYS**
+## 📊 **PROBLEM SOM UPPTÄCKTES**
 
-### **Vad hände:**
-1. **PR #95 försökte skapa Next.js-struktur** (`components/`, `pages/`) i vårt Express-projekt
-2. **Vi stängde PR #95** eftersom strukturen var fel
-3. **Jules fortsätter skapa conflict-resolution tasks** för stängda PRs
-4. **Loop skapas:** Task #96, #97, #104, #105, #106, #107, #108, #109...
+### **Jules Task Explosion:**
+- **24 Draft PRs** skapades av Jules med merge conflicts
+- **11 Issues** blev problematiska och blockerade systemet
+- **Alla PRs hade "dirty" mergeable state** - kunde inte mergas
+- **Värdefull kod fastnade** i konfliktfyllda PRs
 
-### **Verklig orsak:**
-- **Mappstruktur-mismatch:** Jules tror vi har Next.js men vi har Express/TypeScript
-- **Stängda PRs triggar fortfarande conflict resolution**
-- **Systemet förstår inte att PR #95 är permanent stängd**
+### **Cleanup Operation Genomförd:**
+- **Räddade värdefull kod** från PR #85 (TaskCard.tsx)
+- **Stängde alla problematiska PRs** (24 st)
+- **Stängde problematiska Issues** (8 st)
+- **Behöll endast värdefulla tasks** (#111, #62, #59)
 
----
+## 🔍 **RÄDDAD KOD LOKATION**
 
-## ✅ **VÅR LÖSNING**
+### **src/rescued-pr-code/**
+- `components/TaskCard.tsx` - React komponent för task management
+- `RESCUE_SUMMARY.md` - Komplett dokumentation av rescue operation
+- Denna kod är **KRITISK** för Master Plan 2.0 Visual Dashboard
 
-### **1. Skapade rätt mappstruktur:**
-```bash
-jules-automation-test/
-├── src/
-│   ├── components/     # ✅ SKAPAD (men borttagen pga JSX-problem)
-│   ├── ui/            # ✅ SKAPAD med dashboard-components.js
-│   └── api/           # ✅ SKAPAD med tasks.ts
-```
+### **src/legacy-import/**
+- `visual-dashboard/dashboard-components.js` - Räddad dashboard kod
+- `infrastructure/` - Server och GitHub client kod
+- `merge-system/` - Autonomous merge manager kod
 
-### **2. Implementerade TasksApiHandler:**
-- ✅ `/api/tasks` - Lista alla tasks
-- ✅ `/api/tasks/completed` - Endast completed tasks
-- ✅ `/api/tasks/:id` - Specifik task
-- ✅ `/api/tasks/:id/approve` - Godkänn task
-- ✅ `/api/tasks/:id/reject` - Avvisa task
+## 🎯 **FRAMTIDA KALLSTART INSTRUKTIONER**
 
-### **3. Skapade JavaScript Dashboard:**
-- ✅ `src/ui/dashboard-components.js` - Ren JavaScript (ingen JSX)
-- ✅ Fungerar med vårt Express-projekt
-- ✅ Visuell task-hantering
-- ✅ Real-time uppdateringar
+### **FÖRSTA STEGET efter omstart:**
+1. **Läs denna fil** (PR_95_PROBLEM_SOLUTION.md)
+2. **Kontrollera src/rescued-pr-code/** för räddad kod
+3. **Kontrollera src/legacy-import/** för infrastruktur
+4. **Begränsa Jules till MAX 1-2 aktiva tasks** åt gången
 
----
+### **Jules Management Strategy:**
+- **Aldrig mer än 2 aktiva issues** med "jules" label samtidigt
+- **Merge innan nästa task** startas
+- **Stäng merge conflict tasks** omedelbart
+- **Fokusera på kvalitet** över kvantitet
 
-## 🚫 **STOPPA LOOPEN**
+### **Värdefull Kod att Integrera:**
+- **TaskCard.tsx** → Visual Approval Dashboard
+- **dashboard-components.js** → Senior-friendly interface
+- **simple-server.ts** → Master Plan 2.0 backend
+- **AutonomousMergeManager.ts** → Intelligent merge system
 
-### **Problemet kvarstår:**
-Jules skapar fortfarande nya conflict-resolution tasks för stängda PRs.
+## 🚨 **VARNING FÖR FRAMTIDEN**
 
-### **Lösning 1: Blacklist problematiska PRs**
-```typescript
-// I AutonomousMergeManager.ts
-const BLACKLISTED_PRS = [
-  'https://github.com/MatRen74/community-outreach-test/pull/95',
-  'https://github.com/MatRen74/community-outreach-test/pull/103',
-  // Lägg till andra problematiska PRs
-];
+**ALDRIG göra detta igen:**
+- Stänga PRs utan att först kontrollera innehållet
+- Låta Jules skapa 20+ parallella tasks
+- Ignorera merge conflicts tills det blir kaos
 
-async handlePullRequest(prUrl: string): Promise<void> {
-  if (BLACKLISTED_PRS.includes(prUrl)) {
-    console.log(`🚫 Skipping blacklisted PR: ${prUrl}`);
-    return;
-  }
-  // ... fortsätt normal hantering
-}
-```
-
-### **Lösning 2: Kontrollera PR-status innan conflict resolution**
-```typescript
-async checkPRStatus(prUrl: string): Promise<boolean> {
-  const prNumber = this.extractPRNumber(prUrl);
-  const pr = await this.githubClient.getPullRequest(prNumber);
-  
-  if (pr.state === 'closed' && !pr.merged) {
-    console.log(`🚫 PR ${prNumber} is closed, skipping conflict resolution`);
-    return false;
-  }
-  
-  return true;
-}
-```
-
-### **Lösning 3: Rensa befintliga conflict tasks**
-```bash
-# Ta bort alla tasks som försöker lösa PR #95
-curl -X POST http://localhost:3000/api/tasks/96/reject -d '{"reason":"PR #95 is permanently closed"}'
-curl -X POST http://localhost:3000/api/tasks/104/reject -d '{"reason":"PR #95 is permanently closed"}'
-# ... för alla PR #95-relaterade tasks
-```
+**ALLTID göra detta:**
+- Analysera PR innehåll innan stängning
+- Begränsa Jules scope
+- Rädda värdefull kod innan cleanup
+- Dokumentera allt för framtida reference
 
 ---
 
-## 🎯 **NÄSTA STEG**
-
-### **Omedelbart (5 minuter):**
-1. **Implementera PR blacklist** i AutonomousMergeManager
-2. **Avvisa alla PR #95-relaterade tasks**
-3. **Testa att loopen stoppas**
-
-### **Kort sikt (30 minuter):**
-1. **Förbättra dashboard** med session continuity
-2. **Implementera live testing integration**
-3. **Testa complete workflow**
-
-### **Medellång sikt (2 timmar):**
-1. **Deploy Visual Approval Dashboard** (Task #62)
-2. **Implementera Session Continuity** grundfunktioner
-3. **Integrera WYSIWYG-komponenter** korrekt
-
----
-
-## 🔧 **TEKNISK IMPLEMENTATION**
-
-### **Stoppa loopen nu:**
-```typescript
-// Lägg till i src/merge/AutonomousMergeManager.ts
-private readonly BLACKLISTED_PRS = new Set([
-  'https://github.com/MatRen74/community-outreach-test/pull/95'
-]);
-
-async handlePullRequest(prUrl: string): Promise<void> {
-  if (this.BLACKLISTED_PRS.has(prUrl)) {
-    console.log(`🚫 Blacklisted PR detected, skipping: ${prUrl}`);
-    return;
-  }
-  
-  // Kontrollera om PR är stängd
-  const prNumber = this.extractPRNumber(prUrl);
-  const pr = await this.githubClient.getPullRequest(prNumber);
-  
-  if (pr.state === 'closed' && !pr.merged) {
-    console.log(`🚫 PR ${prNumber} is closed, adding to blacklist`);
-    this.BLACKLISTED_PRS.add(prUrl);
-    return;
-  }
-  
-  // ... fortsätt normal hantering
-}
-```
-
-### **Rensa befintliga tasks:**
-```bash
-# Script för att rensa alla PR #95-relaterade tasks
-for task_id in 96 104; do
-  curl -X POST "http://localhost:3000/api/preview/${task_id}/reject" \
-    -H "Content-Type: application/json" \
-    -d '{"reason":"PR #95 is permanently closed - stopping conflict loop"}'
-done
-```
-
----
-
-## 🎉 **RESULTAT**
-
-### **Problem löst:**
-- ✅ **Förstått verklig orsak:** Mappstruktur-mismatch
-- ✅ **Skapat rätt struktur:** Express-kompatibel
-- ✅ **Implementerat API:** Fungerar med befintligt system
-- ✅ **Identifierat loop-orsak:** Stängda PRs triggar fortfarande tasks
-
-### **Nästa fas:**
-- 🔄 **Stoppa loopen** med blacklist
-- 🎨 **Deploy visual dashboard** 
-- 🧠 **Implementera session continuity**
-- 🚀 **Fullständig integration** av alla komponenter
-
-**Vi har löst den verkliga orsaken och har en klar väg framåt!** 🎯
+*Skapad: 2025-08-11 efter PR cleanup operation*
+*Status: KRITISK INFORMATION - Läs vid varje kallstart*

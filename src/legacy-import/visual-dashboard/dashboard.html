@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jules Automation Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+        .header { background: #2563eb; color: white; padding: 1rem; text-align: center; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #2563eb; }
+        .stat-label { color: #6b7280; margin-top: 0.5rem; }
+        .tasks { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .task-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; }
+        .task-list { max-height: 600px; overflow-y: auto; }
+        .task-item { padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: between; align-items: center; }
+        .task-info { flex: 1; }
+        .task-title { font-weight: 600; margin-bottom: 0.5rem; }
+        .task-status { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-executing { background: #dbeafe; color: #1e40af; }
+        .task-actions { margin-left: 1rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .btn-approve { background: #10b981; color: white; }
+        .btn-reject { background: #ef4444; color: white; }
+        .btn:hover { opacity: 0.9; }
+        .refresh-btn { background: #6366f1; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Jules Automation Dashboard</h1>
+        <p>Visual Task Management & Approval System</p>
+    </div>
+    
+    <div class="container">
+        <button class="refresh-btn" onclick="loadTasks()">🔄 Refresh Tasks</button>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTasks">-</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">-</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingTasks">-</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="executingTasks">-</div>
+                <div class="stat-label">Executing</div>
+            </div>
+        </div>
+        
+        <div class="tasks">
+            <div class="task-header">
+                <h2>📋 Active Tasks</h2>
+            </div>
+            <div class="task-list" id="taskList">
+                <div style="padding: 2rem; text-align: center; color: #6b7280;">
+                    Loading tasks...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadTasks() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                updateStats(data.tasks);
+                renderTasks(data.tasks);
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('taskList').innerHTML = 
+                    '<div style="padding: 2rem; text-align: center; color: #ef4444;">Error loading tasks</div>';
+            }
+        }
+        
+        function updateStats(tasks) {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.status === 'completed').length;
+            const pending = tasks.filter(t => t.status === 'pending').length;
+            const executing = tasks.filter(t => t.status === 'executing').length;
+            
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+            document.getElementById('executingTasks').textContent = executing;
+        }
+        
+        function renderTasks(tasks) {
+            const taskList = document.getElementById('taskList');
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<div style="padding: 2rem; text-align: center; color: #6b7280;">No tasks found</div>';
+                return;
+            }
+            
+            taskList.innerHTML = tasks.map(task => `
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-title">${task.title}</div>
+                        <div>Issue #${task.githubIssueNumber} • 
+                            <span class="task-status status-${task.status}">${task.status}</span>
+                        </div>
+                        ${task.prUrl ? `<div style="margin-top: 0.5rem;"><a href="${task.prUrl}" target="_blank">🔗 View PR</a></div>` : ''}
+                    </div>
+                    <div class="task-actions">
+                        ${task.status === 'completed' && task.prUrl ? `
+                            <button class="btn btn-approve" onclick="approveTask(${task.githubIssueNumber})">✅ Approve</button>
+                            <button class="btn btn-reject" onclick="rejectTask(${task.githubIssueNumber})">❌ Reject</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function approveTask(taskId) {
+            try {
+                const response = await fetch(`/api/preview/${taskId}/approve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Task approved and merged!');
+                    loadTasks();
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Error approving task: ' + error.message);
+            }
+        }
+        
+        async function rejectTask(taskId) {
+            const reason = prompt('Reason for rejection (optional):');
+            try {
+                const response = await fetch(`/api/preview/${taskId}/reject`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('❌ Task rejected');
+                    loadTasks();
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Error rejecting task: ' + error.message);
+            }
+        }
+        
+        // Load tasks on page load
+        loadTasks();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadTasks, 30000);
+    </script>
+</body>
+</html>

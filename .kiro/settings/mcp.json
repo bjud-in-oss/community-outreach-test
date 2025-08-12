@@ -13,9 +13,38 @@
         "fetch"
       ]
     },
+    "github": {
+      "command": "uvx",
+      "args": [
+        "mcp-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "create_or_update_file",
+        "create_issue",
+        "create_pull_request",
+        "fork_repository",
+        "get_file_contents",
+        "get_issue",
+        "get_pull_request",
+        "get_repository",
+        "list_issues",
+        "list_pull_requests",
+        "list_repositories",
+        "search_repositories",
+        "update_issue"
+      ]
+    },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "disabled": false,
       "autoApprove": []
     },
