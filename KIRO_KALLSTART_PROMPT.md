@@ -17,7 +17,7 @@ FÖRST: Testa GitHub MCP connection:
 3. Kontrollera om det finns väntande Jules tasks
 
 SEDAN: Om Jules tasks finns:
-1. Lista alla issues i MatRen74/community-outreach och community-outreach-test
+1. Lista alla issues i bjud-in-oss/community-outreach-test
 2. Hitta issues med label "jules" 
 3. Stäng eller hantera väntande tasks
 4. Rapportera status

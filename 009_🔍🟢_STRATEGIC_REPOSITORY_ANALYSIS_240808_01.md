@@ -65,8 +65,8 @@
 cp -r jules-automation-test/ jules-automation-backup-$(date +%Y%m%d)
 
 # 2. Skapa Master Plan 2.0 repo
-git clone https://github.com/MatRen74/community-outreach.git
-cd community-outreach
+git clone https://github.com/bjud-in-oss/community-outreach-test.git
+cd community-outreach-test
 
 # 3. Integrera värdefull kod från gamla systemet
 mkdir -p src/legacy-integration/
@@ -104,7 +104,7 @@ interface HybridSystem {
 #### **Dag 1-2: Repository Setup & Migration**
 ```bash
 # Skapa nytt Master Plan 2.0 repo
-git clone https://github.com/MatRen74/community-outreach.git master-plan-repo
+git clone https://github.com/bjud-in-oss/community-outreach-test.git master-plan-repo
 cd master-plan-repo
 
 # Kopiera Master Plan 2.0 struktur

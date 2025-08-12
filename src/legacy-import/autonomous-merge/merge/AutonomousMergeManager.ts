@@ -47,8 +47,8 @@ export class AutonomousMergeManager {
   
   // 🚫 BLACKLIST: PRs that should never be processed
   private readonly BLACKLISTED_PRS = new Set([
-    'https://github.com/MatRen74/community-outreach-test/pull/95',
-    'https://github.com/MatRen74/community-outreach-test/pull/103',
+    'https://github.com/bjud-in-oss/community-outreach-test/pull/95',
+    'https://github.com/bjud-in-oss/community-outreach-test/pull/103',
     // Add more problematic PRs here
   ]);
   

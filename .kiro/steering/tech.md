@@ -156,8 +156,8 @@ OPENAI_API_KEY=your_openai_api_key  # Backup
 
 # GitHub (Jules integration)
 GITHUB_TOKEN=your_github_token
-GITHUB_REPO_OWNER=MatRen74
-GITHUB_REPO_NAME=community-outreach
+GITHUB_REPO_OWNER=bjud-in-oss
+GITHUB_REPO_NAME=community-outreach-test
 
 # LlamaIndex
 LLAMAINDEX_CACHE_DIR=./cache/llamaindex
@@ -185,8 +185,8 @@ ANALYTICS_ID=your_analytics_id  # Usage analytics
 ### Första Installation
 ```bash
 # 1. Klona repository
-git clone https://github.com/MatRen74/community-outreach.git
-cd community-outreach
+git clone https://github.com/bjud-in-oss/community-outreach-test.git
+cd community-outreach-test
 
 # 2. Installera dependencies
 npm install

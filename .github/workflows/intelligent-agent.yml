@@ -79,8 +79,8 @@ jobs:
           
           const agent = new IntelligentRoundabout({
             repo: {
-              owner: 'MatRen74',
-              repo: 'community-outreach-platform'
+              owner: 'bjud-in-oss',
+              repo: 'community-outreach-test'
             }
           });
           
