@@ -1,222 +1,129 @@
-# Implementation Tasks - Senior Cockpit (Fas 0.4)
+# Implementation Plan - Senior Cockpit (Fas 0.4)
 
-**Baserat på:** Jules revolutionära analys och Senior Cockpit requirements  
-**Status:** Delvis implementerat - behöver integration och förbättringar  
-**Referens:** `JULES_SENIOR_COCKPIT_IMPLEMENTATION_PLAN.md`
+## Baserat på Requirements Document och Design Document
 
-## Tasks
+- [x] 1. Skapa Senior Cockpit Grundstruktur
+  - Skapa `src/conscious-agent/senior-cockpit/` katalogstruktur
+  - Implementera `SeniorCockpit.tsx` huvudkomponent med grundläggande layout
+  - Skapa `SeniorDesignTokens.ts` med senior-vänliga designvärden (stora knappar, hög kontrast)
+  - Implementera responsiv layout som fungerar på desktop, tablet och mobil
+  - _Requirements: Requirement 1, Requirement 8_
 
-### ✅ 1. Skapa Senior Cockpit Grundstruktur
-**Status:** Completed
-- [x] 1.1 Skapa `src/conscious-agent/senior-cockpit/SeniorCockpit.tsx` huvudkomponent
-  - Implementerad med React hooks för state management
-  - Integrerad med SeniorViewService för data
-  - _Requirements: 1, 5_
+- [x] 2. Implementera Projektöversikt Komponent
+  - Skapa `ProjectOverview.tsx` komponent med senior-vänlig projektbeskrivning
+  - Implementera `ProjectSummary` interface och datastruktur
+  - Skapa visuell progress-indikator utan tekniska termer
+  - Implementera "Nästa steg" sektion med uppmuntrande språk
+  - _Requirements: Requirement 5_
 
-- [x] 1.2 Skapa `src/conscious-agent/senior-cockpit/types/SeniorCockpitTypes.ts`
-  - Komplett TypeScript interface definitions
-  - Senior View vs System View separation
-  - _Requirements: 2, 7_
+- [x] 3. Skapa Fas-Progression Visualisering
+  - Implementera `PhaseIndicator.tsx` med "journey-map" stil
+  - Skapa visuella indikatorer för Crawl/Walk/Run/Fly som "Grundläggande Setup/Utveckling/Förbättring/Perfektion"
+  - Implementera progress bars och milstones med senior-vänliga beskrivningar
+  - Skapa animationer som är lugna och inte överväldigande
+  - _Requirements: Requirement 3_
 
-### ✅ 2. Implementera SeniorViewService (Backend For Frontend)
-**Status:** Completed
-- [x] 2.1 Skapa `src/conscious-agent/senior-cockpit/services/SeniorViewService.ts`
-  - Backend For Frontend pattern implementation
-  - Mock data för MVP testing
-  - Cache och error handling
-  - _Requirements: 2, 7_
+- [x] 4. Implementera Senior View Service
+  - Skapa `SeniorViewService.ts` som hämtar data från Communication Bridge
+  - Implementera `getProjectOverview()`, `getPhaseProgress()`, `getRecentUpdates()` metoder
+  - Skapa interface för säker dataöverföring mellan lager
+  - Implementera caching för bättre prestanda
+  - _Requirements: Requirement 2, Requirement 7_
 
-- [x] 2.2 Integrera med SeniorTranslator för översättning
-  - Använder befintlig SeniorTranslator från Communication Bridge
-  - Transformerar System View till Senior View
-  - _Requirements: 2, 4, 7_
+- [ ] 5. Skapa Förbättrad Senior Translator
+  - Implementera `SeniorTranslator.ts` med kontextmedveten översättning
+  - Skapa `aggregateToSeniorUpdates()` för att gruppera tekniska händelser
+  - Implementera `translatePhaseProgress()` för fas-översättning
+  - Skapa `generateEncouragingDescription()` för positiva meddelanden
+  - _Requirements: Requirement 2, Requirement 4_
 
-### ✅ 3. Skapa Visuella Komponenter
-**Status:** Completed
-- [x] 3.1 Implementera `PhaseVisualizer.tsx` för Crawl/Walk/Run/Fly progression
-  - Visuell representation med emojis och färger
-  - Progress bars och milstones
-  - Senior-vänlig terminologi
-  - _Requirements: 3_
+- [ ] 6. Implementera Notifikationssystem
+  - Skapa `SeniorNotification.tsx` komponent med stora, tydliga meddelanden
+  - Implementera `SeniorNotification` interface med senior-vänliga meddelandetyper
+  - Skapa automatisk prioritering av notifikationer
+  - Implementera "celebration moments" för att uppmuntra användaren
+  - _Requirements: Requirement 6_
 
-- [x] 3.2 Implementera `ProjectOverview.tsx` för projektbeskrivning
-  - Senior-vänlig projektöversikt
-  - Progress visualization
-  - Uppmuntrande meddelanden
-  - _Requirements: 5_
+- [ ] 7. Skapa Senior-Vänlig Felhantering
+  - Implementera `SeniorErrorHandler.ts` som översätter alla tekniska fel
+  - Skapa `translateErrorToSeniorMessage()` med uppmuntrande felmeddelanden
+  - Implementera `GracefulDegradation.ts` för fallback-funktionalitet
+  - Skapa "Vi arbetar på det" meddelanden istället för tekniska fel
+  - _Requirements: Requirement 2, Requirement 7_
 
-### ✅ 4. Integrera med Communication Bridge (Completed)
-**Status:** Completed - Communication Bridge fully integrated
-- [x] 4.1 Ersätt mock data med riktig Communication Bridge integration
-  - ✅ Uppdaterad SeniorViewService att använda Communication Bridge
-  - ✅ Implementerad fetchSystemViewData() med riktiga API:er från Bridge och Context Manager
-  - ✅ Integrerad med Communication Bridge statistics och message history
-  - ✅ Integrerad med Context Manager för aktivitetshistorik
-  - _Requirements: 7_
+- [ ] 8. Implementera Communication Bridge Integration
+  - Skapa säker integration med `CommunicationBridge.ts`
+  - Implementera `TechnicalFilter` validering för all inkommande data
+  - Skapa audit logging för all dataöverföring
+  - Säkerställ att ingen teknisk information läcker igenom till Senior Cockpit
+  - _Requirements: Requirement 7_
 
-- [x] 4.2 Förbättra SeniorTranslator för kontextmedveten summering
-  - ✅ Lagt till aggregateSystemEvents() metod för intelligent sammanslagning
-  - ✅ Implementerad generateContextualSummary() via Communication Bridge
-  - ✅ Lagt till translateWithPhaseContext() för fasmedveten översättning
-  - ✅ Förbättrad confidence scoring baserat på systemdata
-  - ✅ Intelligent notifikationsgenerering baserat på systemhändelser
-  - _Requirements: 2, 4, 7_
+- [ ] 9. Skapa Automatiska Progress-Sammanfattningar
+  - Implementera `ProgressAggregator.ts` för veckovisa digest
+  - Skapa "Denna vecka slutförde vi..." och "Nästa vecka fokuserar vi på..." meddelanden
+  - Implementera kontextuell aggregering av tekniska händelser
+  - Skapa uppmuntrande och positiva formuleringar för alla uppdateringar
+  - _Requirements: Requirement 4_
 
-- [x] 4.3 Implementera real-time uppdateringar
-  - ✅ RealTimeUpdateService.ts skapad för intelligent polling
-  - ✅ Senior Cockpit HTML uppdaterad med real-time funktionalitet
-  - ✅ 30-sekunders uppdateringsintervall (senior-vänligt)
-  - ✅ Online/offline status monitoring med visuella indikatorer
-  - ✅ Automatisk refresh när sidan blir synlig
-  - ✅ Cache invalidation headers för färsk data
-  - ✅ Real-time status endpoint (/api/senior-view/status)
-  - ✅ Graceful degradation vid nätverksproblem
-  - ✅ Senior-vänliga statusmeddelanden utan teknisk jargong
-  - _Requirements: 4_
+- [ ] 10. Implementera Tillgänglighetsförbättringar
+  - Skapa WCAG 2.1 AA compliance för alla komponenter
+  - Implementera screen reader support med semantisk HTML
+  - Skapa keyboard navigation för alla interaktiva element
+  - Implementera high contrast mode och text scaling
+  - _Requirements: Requirement 8_
 
-### ✅ 5. Ersätt HybridDashboard med Senior Cockpit (Completed)
-**Status:** Completed - Senior Cockpit is now the main interface
-- [x] 5.1 Uppdatera routing för att använda Senior Cockpit som huvudinterface
-  - ✅ Skapat senior-cockpit.html som ny huvudinterface
-  - ✅ Uppdaterat dashboard.html för att promota Senior Cockpit
-  - ✅ Implementerat /api/senior-view endpoint med Communication Bridge integration
-  - ✅ Senior-friendly design med stora knappar, tydlig text och visuella indikatorer
-  - ✅ Phase visualization (Crawl/Walk/Run/Fly) med progress bars
-  - ✅ Intelligent notifikationer utan teknisk jargong
-  - ✅ Auto-refresh funktionalitet var 2:a minut
-  - _Requirements: 1_
+- [ ] 11. Skapa Senior-Säkra Datamodeller
+  - Implementera `SeniorSafeData` interface utan tekniska fält
+  - Skapa `SeniorFriendlyUpdate` datastruktur
+  - Implementera validering som blockerar teknisk terminologi
+  - Skapa TypeScript types som förhindrar teknisk data-läckage
+  - _Requirements: Requirement 1, Requirement 2_
 
-- [ ] 5.2 Migrera användbar funktionalitet från HybridDashboard
-  - Identifiera senior-vänliga delar av HybridDashboard
-  - Integrera i Senior Cockpit utan teknisk komplexitet
-  - _Requirements: 1, 6_
+- [ ] 12. Implementera Användarplan-Förberedelser
+  - Skapa utbyggbar arkitektur för framtida Användarplan-formulär
+  - Implementera stöd för AI-driven requirements generation
+  - Skapa bidirektional kommunikation (senior input → teknisk implementation)
+  - Implementera teknisk ledare approval workflow foundation
+  - _Requirements: Requirement 9_
 
-- [ ] 5.3 Testa att Senior Cockpit fungerar som huvudinterface
-  - End-to-end testing av komplett flöde
-  - Validera att ingen teknisk komplexitet exponeras
-  - _Requirements: 1, 10_
+- [ ] 13. Skapa Enhetstester för Senior-Säkerhet
+  - Implementera tester som verifierar att ingen teknisk jargong läcker igenom
+  - Skapa tester för alla felmeddelanden är senior-vänliga
+  - Implementera tester för tillgänglighet och responsiv design
+  - Skapa automatiska tester för WCAG compliance
+  - _Requirements: Alla requirements_
 
-### 📋 6. Implementera Automatiska Progress-Sammanfattningar
-**Status:** Not Started
-- [ ] 6.1 Skapa veckovis digest-funktionalitet
-  - "Denna vecka slutförde vi..." meddelanden
-  - "Nästa vecka fokuserar vi på..." planering
-  - _Requirements: 4_
+- [ ] 14. Implementera Senior User Testing Framework
+  - Skapa `SeniorTestingPlan` för testning med riktiga seniorer
+  - Implementera feedback-insamling utan teknisk komplexitet
+  - Skapa testscenarier för första användning, förståelse av framsteg, felhantering
+  - Implementera success criteria: intuitive, comfortable, helpful, safe
+  - _Requirements: Requirement 10_
 
-- [ ] 6.2 Implementera teknisk händelse-aggregering
-  - Samla Git commits, task completions, build status
-  - Översätt till meningsfulla senior-meddelanden
-  - _Requirements: 4, 6_
+- [ ] 15. Skapa Integration med Befintliga Komponenter
+  - Integrera med befintliga `SeniorCockpit.tsx` komponenter om de finns
+  - Ersätt `HybridDashboard` som huvudinterface
+  - Skapa smidig övergång från tekniska gränssnitt till Senior Cockpit
+  - Implementera bakåtkompatibilitet under övergångsperioden
+  - _Requirements: Requirement 3_
 
-- [ ] 6.3 Skapa notifikationssystem
-  - Meningsfulla, uppmuntrande notifikationer
-  - Prioritering och relevans för seniorer
-  - _Requirements: 6_
+- [ ] 16. Implementera Real-time System View Integration
+  - Skapa real-time uppdateringar från System View via Communication Bridge
+  - Implementera WebSocket eller Server-Sent Events för live-uppdateringar
+  - Skapa intelligent batching av uppdateringar för att inte övervälma senioren
+  - Implementera "quiet hours" funktionalitet för notifikationer
+  - _Requirements: Requirement 4, Requirement 7_
 
-### 🎨 7. Förbättra Senior-Vänlig Design
-**Status:** Not Started
-- [ ] 7.1 Implementera responsiv design för alla enheter
-  - Desktop, tablet, mobil optimering
-  - Stora knappar och tydlig text
-  - _Requirements: 8_
+- [ ] 17. Skapa Performance Optimering
+  - Implementera lazy loading för komponenter som inte visas direkt
+  - Skapa intelligent caching av översatta meddelanden
+  - Implementera debouncing för real-time uppdateringar
+  - Optimera för långsam internetanslutning (vanligt bland seniorer)
+  - _Requirements: Requirement 8_
 
-- [ ] 7.2 Förbättra tillgänglighet för seniorer
-  - WCAG-compliance testing
-  - Färgkontraster och läsbarhet
-  - Keyboard navigation
-  - _Requirements: 8_
-
-- [ ] 7.3 Lägg till senior-vänliga interaktioner
-  - Hover states och feedback
-  - Loading states med uppmuntrande meddelanden
-  - Error states med hjälpsamma förslag
-  - _Requirements: 6, 8_
-
-### 🔮 8. Förbered för Användarplan-Integration (Fas 1 Walk)
-**Status:** Not Started
-- [ ] 8.1 Designa Användarplan-formulär komponenter
-  - Enkelt formulär för "Vad vill du skapa?"
-  - Dropdown för prioritering och målgrupp
-  - _Requirements: 9_
-
-- [ ] 8.2 Skapa placeholder för AI-driven requirements generation
-  - Interface för att skicka användarplan till AI
-  - Placeholder för teknisk ledare approval
-  - _Requirements: 9_
-
-- [ ] 8.3 Implementera bidirektional kommunikation
-  - Senior input → System View transformation
-  - Feedback loop för kontinuerlig förbättring
-  - _Requirements: 9_
-
-### 🧪 9. Senior-Testning och Validation
-**Status:** Not Started
-- [ ] 9.1 Skapa testplan för senior-användare
-  - Definiera testscenarier utan teknisk jargong
-  - Skapa feedback-formulär för seniorer
-  - _Requirements: 10_
-
-- [ ] 9.2 Genomför användbarhetstester med riktiga seniorer
-  - Rekrytera senior-testare från målgruppen
-  - Observera användning utan instruktioner
-  - _Requirements: 10_
-
-- [ ] 9.3 Iterera baserat på senior-feedback
-  - Analysera feedback och identifiera förbättringsområden
-  - Implementera ändringar för bättre senior-vänlighet
-  - _Requirements: 10_
-
-### 🔧 10. System Integration och Performance
-**Status:** Not Started
-- [ ] 10.1 Optimera prestanda för senior-enheter
-  - Testa på äldre datorer och tablets
-  - Optimera laddningstider och responsivitet
-  - _Requirements: 8_
-
-- [ ] 10.2 Implementera robust error handling
-  - Graceful degradation vid systemfel
-  - Senior-vänliga felmeddelanden
-  - Automatisk återhämtning där möjligt
-  - _Requirements: 6, 7_
-
-- [ ] 10.3 Skapa monitoring och analytics
-  - Spåra senior-användning utan att inkräkta på integritet
-  - Identifiera vanliga problem och förbättringsområden
-  - _Requirements: 10_
-
-## Prioriterad Ordning för Nästa Steg
-
-### **Omedelbart (Denna vecka):**
-1. **Task 5.2** - Migrera användbar funktionalitet från HybridDashboard
-2. **Task 6.1** - Implementera automatiska progress-sammanfattningar
-3. **Task 7.1** - Förbättra responsiv design och tillgänglighet
-
-### **Kort sikt (Nästa vecka):**
-1. **Task 6.1-6.2** - Implementera automatiska progress-sammanfattningar
-2. **Task 7.1-7.2** - Förbättra design och tillgänglighet
-3. **Task 9.1** - Skapa testplan för senior-användare
-
-### **Medellång sikt (2-4 veckor):**
-1. **Task 8.1-8.2** - Förbered för Användarplan-integration
-2. **Task 9.2-9.3** - Genomför senior-testning
-3. **Task 10.1-10.3** - System integration och performance
-
-## Framgångskriterier
-
-### **Tekniska Kriterier:**
-- ✅ Senior Cockpit fungerar som enda gränssnitt för seniorer
-- ✅ All data kommer från Communication Bridge, ingen mock data
-- ✅ Real-time uppdateringar fungerar smidigt
-- ✅ Responsiv design på alla enheter
-
-### **Senior-Kriterier:**
-- ✅ Seniorer förstår projektframsteg utan teknisk förklaring
-- ✅ Ingen teknisk komplexitet exponerad
-- ✅ Intuitivt att använda utan instruktioner
-- ✅ Uppmuntrande och positiv upplevelse
-
-### **Arkitektur-Kriterier:**
-- ✅ Följer Jules vision om intelligent filter-gränssnitt
-- ✅ Realiserar Dual Consciousness Architecture fullt ut
-- ✅ Förberedd för Fas 1 (Walk) Användarplan-integration
-- ✅ Skalbar och underhållbar kodstruktur
+- [ ] 18. Implementera Slutlig Integration och Testning
+  - Skapa end-to-end tester för hela Senior Cockpit flödet
+  - Implementera integration med alla andra Fas 0 komponenter
+  - Skapa "Hello World" demonstration genom Senior Cockpit
+  - Verifiera att hela systemet fungerar utan teknisk exponering
+  - _Requirements: Alla requirements_

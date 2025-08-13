@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Cockpit Demo - Test</title>
+    <style>
+        /* Grundläggande stilar för demo */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f0f0;
+            line-height: 1.6;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .demo-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            color: #2563eb;
+        }
+        
+        .demo-header p {
+            margin: 0;
+            font-size: 16px;
+            color: #6b7280;
+        }
+        
+        .mockup-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 3px solid #e5e7eb;
+        }
+        
+        /* Senior Cockpit Mockup Styles */
+        .senior-cockpit-mockup {
+            min-height: 100vh;
+            background-color: #ffffff;
+            font-size: 24px;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        
+        .mockup-header {
+            background-color: #f8fafc;
+            padding: 48px 64px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 64px;
+            text-align: center;
+        }
+        
+        .mockup-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 24px;
+        }
+        
+        .mockup-subtitle {
+            font-size: 32px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .mockup-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 64px;
+            display: grid;
+            gap: 64px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        
+        .mockup-card {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 64px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 32px;
+        }
+        
+        .mockup-card h2 {
+            font-size: 32px;
+            color: #2563eb;
+            margin-bottom: 24px;
+            margin-top: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .mockup-card h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+        
+        .mockup-card p {
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+        
+        .progress-section {
+            margin-bottom: 32px;
+            padding: 32px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 2px solid #dbeafe;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .progress-label {
+            font-weight: 600;
+            font-size: 24px;
+        }
+        
+        .progress-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            width: 75%;
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a, #2563eb);
+            border-radius: 9999px;
+            position: relative;
+            overflow: hidden;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+        
+        .progress-message {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #16a34a;
+        }
+        
+        .phase-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin: 32px 0;
+        }
+        
+        .phase-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .phase-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #dbeafe;
+            border: 4px solid #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .phase-circle.completed {
+            background-color: #dcfce7;
+            border-color: #16a34a;
+        }
+        
+        .phase-circle.upcoming {
+            background-color: #f8fafc;
+            border-color: #9ca3af;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        .phase-name {
+            margin: 0 0 16px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2563eb;
+            text-align: center;
+        }
+        
+        .phase-description {
+            margin: 0;
+            font-size: 18px;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 120px;
+        }
+        
+        .update-item {
+            padding: 24px;
+            background-color: #dcfce7;
+            border-radius: 8px;
+            border: 1px solid #16a34a;
+            margin-bottom: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .update-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .update-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 24px;
+        }
+        
+        .update-description {
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            color: #6b7280;
+        }
+        
+        .update-time {
+            font-size: 18px;
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .notification-item {
+            padding: 24px;
+            background-color: #dcfce7;
+            border-radius: 8px;
+            border: 2px solid #16a34a;
+            margin-bottom: 24px;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .notification-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            padding: 16px;
+            min-width: 44px;
+            min-height: 44px;
+            border-radius: 4px;
+        }
+        
+        .close-button:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .notification-message {
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        /* Responsiv design */
+        @media (max-width: 768px) {
+            .mockup-main {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                padding: 0 32px;
+            }
+            
+            .mockup-card {
+                padding: 32px;
+            }
+            
+            .mockup-header {
+                padding: 32px 32px;
+            }
+            
+            .mockup-title {
+                font-size: 32px;
+            }
+            
+            .phase-container {
+                flex-direction: column;
+                gap: 32px;
+            }
+            
+            .phase-circle {
+                width: 100px;
+                height: 100px;
+                font-size: 32px;
+            }
+        }
+        
+        .demo-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .demo-info h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            color: #2563eb;
+        }
+        
+        .demo-info ul {
+            margin: 0;
+            padding-left: 20px;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .demo-info li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #dcfce7;
+            border-radius: 8px;
+            border: 2px solid #16a34a;
+        }
+        
+        .highlight-box strong {
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Demo Header -->
+        <div class="demo-header">
+            <h1>🧪 Senior Cockpit Demo</h1>
+            <p>Visuell mockup av Senior Cockpit komponenten - Optimerad för seniorer</p>
+        </div>
+
+        <!-- Senior Cockpit Mockup -->
+        <div class="mockup-container">
+            <div class="senior-cockpit-mockup">
+                <!-- Header -->
+                <header class="mockup-header">
+                    <h1 class="mockup-title">🌟 Välkommen till ditt projekt!</h1>
+                    <p class="mockup-subtitle">Vi bygger något fantastiskt åt dig</p>
+                </header>
+
+                <!-- Main Content -->
+                <main class="mockup-main">
+                    <!-- Projektöversikt -->
+                    <section class="mockup-card">
+                        <h2>📊 Ditt Projekt</h2>
+                        <h3>Ditt Fantastiska Projekt</h3>
+                        <p>Vi bygger något alldeles speciellt åt dig. Ett enkelt och vänligt system som hjälper dig att skapa precis det du behöver.</p>
+                        
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Framsteg:</span>
+                                <div class="progress-value">
+                                    <span>75%</span>
+                                    <span>🚀</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-message">
+                                Fantastiska framsteg! 🚀
+                            </div>
+                        </div>
+
+                        <p style="color: #6b7280; font-style: italic;">
+                            Nästa steg: Vi förbereder det första steget
+                        </p>
+                    </section>
+
+                    <!-- Fas-progression -->
+                    <section class="mockup-card">
+                        <h2>🚀 Vår Resa Tillsammans</h2>
+                        <p style="margin-bottom: 32px; color: #6b7280;">
+                            Just nu: <strong>Grundläggande Setup</strong>
+                        </p>
+                        
+                        <div class="phase-container">
+                            <div class="phase-item">
+                                <div class="phase-circle">🌱</div>
+                                <h3 class="phase-name">Grundläggande Setup</h3>
+                                <p class="phase-description">Vi lägger grunden för ditt projekt</p>
+                            </div>
+                            <div class="phase-item">
+                                <div class="phase-circle upcoming">🚀</div>
+                                <h3 class="phase-name" style="color: #9ca3af;">Utveckling</h3>
+                                <p class="phase-description">Vi börjar bygga funktionaliteten</p>
+                            </div>
+                            <div class="phase-item">
+                                <div class="phase-circle upcoming">⭐</div>
+                                <h3 class="phase-name" style="color: #9ca3af;">Förbättring</h3>
+                                <p class="phase-description">Vi gör allt ännu bättre</p>
+                            </div>
+                            <div class="phase-item">
+                                <div class="phase-circle upcoming">🏆</div>
+                                <h3 class="phase-name" style="color: #9ca3af;">Perfektion</h3>
+                                <p class="phase-description">Vi polerar till perfektion</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Senaste uppdateringar -->
+                    <section class="mockup-card">
+                        <h2>📢 Senaste Nytt</h2>
+                        
+                        <div class="update-item">
+                            <div class="update-title">
+                                🎉 Fantastiska framsteg idag!
+                            </div>
+                            <p class="update-description">
+                                Vi har slutfört den grundläggande strukturen för ditt projekt. Allt ser riktigt bra ut!
+                            </p>
+                            <div class="update-time">
+                                måndag 13 augusti 2025 14:30
+                            </div>
+                        </div>
+
+                        <div class="update-item" style="opacity: 0.8;">
+                            <div class="update-title">
+                                ⚡ Vi arbetar för dig
+                            </div>
+                            <p class="update-description">
+                                Just nu förbereder vi nästa steg i utvecklingen. Du behöver inte göra något - vi sköter allt!
+                            </p>
+                            <div class="update-time">
+                                måndag 13 augusti 2025 12:30
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Notifikationer -->
+                    <section class="mockup-card">
+                        <h2>🔔 Meddelanden</h2>
+                        
+                        <div class="notification-item">
+                            <div class="notification-header">
+                                <h3 class="notification-title">Välkommen!</h3>
+                                <button class="close-button" aria-label="Stäng meddelande">✕</button>
+                            </div>
+                            <p class="notification-message">
+                                Ditt projekt är nu igång och vi arbetar för att göra något fantastiskt åt dig.
+                            </p>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <!-- Demo Information -->
+        <div class="demo-info">
+            <h3>🎯 Senior-vänliga funktioner som visas:</h3>
+            <ul>
+                <li><strong>Stora textstorlekar:</strong> Minimum 18px, upp till 48px för rubriker</li>
+                <li><strong>Tydliga ikoner:</strong> 🌟 🚀 📊 🎉 för visuell vägledning</li>
+                <li><strong>Hög kontrast:</strong> Tydliga färger för bättre synlighet</li>
+                <li><strong>Touch-vänliga knappar:</strong> Minimum 44px för enkel användning</li>
+                <li><strong>Uppmuntrande språk:</strong> "Fantastiska framsteg!" istället för teknisk jargong</li>
+                <li><strong>Visuell progression:</strong> Tydliga progress bars och fas-indikatorer</li>
+                <li><strong>Responsiv design:</strong> Fungerar på mobil, tablet och desktop</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <strong>✨ Ingen teknisk komplexitet:</strong>
+                <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                    <li>Inga tekniska termer som "Kod", "System", "Fel"</li>
+                    <li>Inga felmeddelanden eller stack traces</li>
+                    <li>Endast positiva, uppmuntrande meddelanden</li>
+                    <li>Allt översatt till vardagsspråk</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enkel interaktivitet för demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Klickbara uppdateringar
+            const updates = document.querySelectorAll('.update-item');
+            updates.forEach(update => {
+                update.addEventListener('click', function() {
+                    this.style.opacity = '0.6';
+                    console.log('Update clicked and marked as read');
+                });
+            });
+
+            // Stäng notifikationer
+            const closeButtons = document.querySelectorAll('.close-button');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.closest('.notification-item').style.display = 'none';
+                    console.log('Notification dismissed');
+                });
+            });
+
+            // Klickbara fas-cirklar
+            const phaseCircles = document.querySelectorAll('.phase-circle');
+            phaseCircles.forEach(circle => {
+                circle.addEventListener('click', function() {
+                    console.log('Phase clicked:', this.parentElement.querySelector('.phase-name').textContent);
+                });
+                
+                circle.style.cursor = 'pointer';
+                circle.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px) scale(1.05)';
+                });
+                
+                circle.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            console.log('Senior Cockpit Demo loaded successfully! 🎉');
+            console.log('Try clicking on updates, phases, and the close button on notifications.');
+        });
+    </script>
+</body>
+</html>

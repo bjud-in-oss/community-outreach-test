@@ -1,177 +1,417 @@
-// MASTER PLAN 2.0: Project Overview Component
-// STATUS: Jules Senior Cockpit Implementation - Project Summary
-// INTEGRATION: Conscious Agent - Senior-friendly Project Display
-// ARCHITECTURE: Dual Consciousness Architecture compliant
-
-import React from 'react';
-import { ProjectOverview as ProjectOverviewType } from '../types/SeniorCockpitTypes';
-
 /**
- * JULES PROJECT OVERVIEW
- * 
- * Senior-vänlig projektöversikt som visar vad som byggs,
- * nuvarande status och vad som redan är klart.
- * Döljer all teknisk komplexitet.
+ * ProjectOverview - Dedikerad komponent för projektöversikt
+ * Visar projektinformation på ett senior-vänligt sätt utan teknisk komplexitet
  */
 
+import React, { useState } from 'react';
+import { SeniorDesignTokens } from '../SeniorDesignTokens';
+import { ProjectSummary } from '../types/SeniorTypes';
+
 interface ProjectOverviewProps {
-  overview: ProjectOverviewType;
+  projectSummary: ProjectSummary;
+  onDetailsToggle?: (expanded: boolean) => void;
   className?: string;
 }
 
+const Card = {
+  backgroundColor: SeniorDesignTokens.colors.surface,
+  borderRadius: SeniorDesignTokens.borderRadius.lg,
+  padding: SeniorDesignTokens.spacing.xl,
+  boxShadow: SeniorDesignTokens.shadows.md,
+  border: `1px solid ${SeniorDesignTokens.colors.border}`,
+  marginBottom: SeniorDesignTokens.spacing.lg
+};
+
+const SectionTitle = {
+  fontSize: SeniorDesignTokens.fontSize.large,
+  color: SeniorDesignTokens.colors.primary,
+  marginBottom: SeniorDesignTokens.spacing.md,
+  marginTop: 0,
+  fontWeight: '700',
+  display: 'flex',
+  alignItems: 'center',
+  gap: SeniorDesignTokens.spacing.sm
+};
+
+const ProjectTitle = {
+  fontSize: SeniorDesignTokens.fontSize.xlarge,
+  marginBottom: SeniorDesignTokens.spacing.sm,
+  marginTop: 0,
+  fontWeight: '600',
+  color: SeniorDesignTokens.colors.text,
+  lineHeight: '1.2'
+};
+
+const Description = {
+  marginBottom: SeniorDesignTokens.spacing.lg,
+  lineHeight: '1.7',
+  fontSize: SeniorDesignTokens.fontSize.medium,
+  color: SeniorDesignTokens.colors.text
+};
+
+const ProgressSection = {
+  marginBottom: SeniorDesignTokens.spacing.lg,
+  padding: SeniorDesignTokens.spacing.lg,
+  backgroundColor: SeniorDesignTokens.colors.background,
+  borderRadius: SeniorDesignTokens.borderRadius.md,
+  border: `2px solid ${SeniorDesignTokens.colors.primaryLight}`
+};
+
+const ProgressHeader = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: SeniorDesignTokens.spacing.md
+};
+
+const ProgressLabel = {
+  fontWeight: '600',
+  fontSize: SeniorDesignTokens.fontSize.medium,
+  color: SeniorDesignTokens.colors.text
+};
+
+const ProgressValue = {
+  fontSize: SeniorDesignTokens.fontSize.xlarge,
+  fontWeight: '700',
+  color: SeniorDesignTokens.colors.success,
+  display: 'flex',
+  alignItems: 'center',
+  gap: SeniorDesignTokens.spacing.sm
+};
+
+const ProgressBar = {
+  width: '100%',
+  height: '16px',
+  backgroundColor: SeniorDesignTokens.colors.border,
+  borderRadius: SeniorDesignTokens.borderRadius.full,
+  overflow: 'hidden' as const,
+  position: 'relative' as const
+};
+
+const NextStepsSection = {
+  padding: SeniorDesignTokens.spacing.lg,
+  backgroundColor: SeniorDesignTokens.colors.infoLight,
+  borderRadius: SeniorDesignTokens.borderRadius.md,
+  border: `2px solid ${SeniorDesignTokens.colors.info}`,
+  marginTop: SeniorDesignTokens.spacing.lg
+};
+
+const ToggleButton = {
+  backgroundColor: 'transparent',
+  border: `2px solid ${SeniorDesignTokens.colors.primary}`,
+  color: SeniorDesignTokens.colors.primary,
+  padding: `${SeniorDesignTokens.spacing.sm} ${SeniorDesignTokens.spacing.md}`,
+  borderRadius: SeniorDesignTokens.borderRadius.md,
+  fontSize: SeniorDesignTokens.fontSize.medium,
+  fontWeight: '600',
+  cursor: 'pointer',
+  minHeight: SeniorDesignTokens.spacing.touch,
+  transition: `all ${SeniorDesignTokens.animation.duration.normal} ${SeniorDesignTokens.animation.easing.easeOut}`,
+  marginTop: SeniorDesignTokens.spacing.md
+};
+
 export const ProjectOverview: React.FC<ProjectOverviewProps> = ({
-  overview,
-  className = ''
+  projectSummary,
+  onDetailsToggle,
+  className
 }) => {
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'bg-green-500';
-    if (progress >= 60) return 'bg-blue-500';
-    if (progress >= 40) return 'bg-yellow-500';
-    return 'bg-gray-400';
+  const [showDetails, setShowDetails] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleToggleDetails = () => {
+    setIsAnimating(true);
+    const newState = !showDetails;
+    setShowDetails(newState);
+    onDetailsToggle?.(newState);
+    
+    // Reset animation state
+    setTimeout(() => setIsAnimating(false), 300);
   };
 
-  const getProgressMessage = (progress: number) => {
-    if (progress >= 80) return 'Nästan klart! 🎉';
-    if (progress >= 60) return 'Bra framsteg! 👍';
-    if (progress >= 40) return 'På god väg! 🚀';
-    if (progress >= 20) return 'Kommit igång! 💪';
-    return 'Precis startat! 🌱';
+  const getProgressMessage = (progress: number): string => {
+    if (progress >= 90) return "Nästan klart! 🎉";
+    if (progress >= 75) return "Fantastiska framsteg! 🚀";
+    if (progress >= 50) return "Vi kommer långt! 💪";
+    if (progress >= 25) return "Bra början! ⭐";
+    return "Vi har startat resan! 🌟";
+  };
+
+  const getProgressColor = (progress: number): string => {
+    if (progress >= 75) return SeniorDesignTokens.colors.success;
+    if (progress >= 50) return SeniorDesignTokens.colors.info;
+    if (progress >= 25) return SeniorDesignTokens.colors.warning;
+    return SeniorDesignTokens.colors.primary;
+  };
+
+  const formatLastUpdate = (date: Date): string => {
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return "Uppdaterat just nu";
+    if (diffInHours < 24) return `Uppdaterat för ${diffInHours} timme${diffInHours > 1 ? 'r' : ''} sedan`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays === 1) return "Uppdaterat igår";
+    if (diffInDays < 7) return `Uppdaterat för ${diffInDays} dagar sedan`;
+    
+    return date.toLocaleDateString('sv-SE', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   return (
-    <div className={`project-overview bg-white rounded-lg shadow-lg p-6 ${className}`}>
-      {/* Projekttitel och beskrivning */}
-      <div className="header mb-6">
-        <div className="flex items-center mb-3">
-          <span className="text-3xl mr-3">🏗️</span>
-          <h1 className="text-2xl font-bold text-gray-800">{overview.title}</h1>
+    <div style={Card} className={className}>
+      {/* Huvudrubrik */}
+      <h2 style={SectionTitle}>
+        📊 Ditt Projekt
+      </h2>
+
+      {/* Projekttitel */}
+      <h3 style={ProjectTitle}>
+        {projectSummary.title}
+      </h3>
+
+      {/* Projektbeskrivning */}
+      <p style={Description}>
+        {projectSummary.description}
+      </p>
+
+      {/* Framstegsinformation */}
+      <div style={ProgressSection}>
+        <div style={ProgressHeader}>
+          <span style={ProgressLabel}>Framsteg:</span>
+          <div style={ProgressValue}>
+            <span>{projectSummary.overallProgress}%</span>
+            <span style={{ fontSize: SeniorDesignTokens.fontSize.medium }}>
+              {projectSummary.overallProgress >= 75 ? '🎉' : 
+               projectSummary.overallProgress >= 50 ? '🚀' : 
+               projectSummary.overallProgress >= 25 ? '⭐' : '🌟'}
+            </span>
+          </div>
         </div>
-        
-        <p className="text-gray-600 text-lg leading-relaxed">
-          {overview.description}
+
+        {/* Progress bar med animation */}
+        <div style={ProgressBar}>
+          <div 
+            style={{
+              width: `${projectSummary.overallProgress}%`,
+              height: '100%',
+              backgroundColor: getProgressColor(projectSummary.overallProgress),
+              transition: `width ${SeniorDesignTokens.animation.duration.slow} ${SeniorDesignTokens.animation.easing.easeOut}`,
+              borderRadius: SeniorDesignTokens.borderRadius.full,
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Glimmer-effekt för visuell feedback */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '-100%',
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+              animation: projectSummary.overallProgress > 0 ? 'shimmer 2s ease-in-out infinite' : 'none'
+            }} />
+          </div>
+        </div>
+
+        {/* Uppmuntrande meddelande */}
+        <div style={{
+          textAlign: 'center',
+          marginTop: SeniorDesignTokens.spacing.md,
+          fontSize: SeniorDesignTokens.fontSize.medium,
+          fontWeight: '600',
+          color: getProgressColor(projectSummary.overallProgress)
+        }}>
+          {getProgressMessage(projectSummary.overallProgress)}
+        </div>
+      </div>
+
+      {/* Aktuell fas */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: SeniorDesignTokens.spacing.md,
+        marginBottom: SeniorDesignTokens.spacing.lg,
+        padding: SeniorDesignTokens.spacing.md,
+        backgroundColor: SeniorDesignTokens.colors.primaryLight,
+        borderRadius: SeniorDesignTokens.borderRadius.md,
+        border: `2px solid ${SeniorDesignTokens.colors.primary}`
+      }}>
+        <div style={{
+          fontSize: SeniorDesignTokens.fontSize.xlarge,
+          fontWeight: '700'
+        }}>
+          🎯
+        </div>
+        <div>
+          <div style={{
+            fontSize: SeniorDesignTokens.fontSize.medium,
+            color: SeniorDesignTokens.colors.textSecondary,
+            marginBottom: '4px'
+          }}>
+            Just nu arbetar vi med:
+          </div>
+          <div style={{
+            fontSize: SeniorDesignTokens.fontSize.large,
+            fontWeight: '600',
+            color: SeniorDesignTokens.colors.primary
+          }}>
+            {projectSummary.currentPhaseDisplay}
+          </div>
+        </div>
+      </div>
+
+      {/* Nästa steg */}
+      <div style={NextStepsSection}>
+        <h4 style={{
+          margin: 0,
+          marginBottom: SeniorDesignTokens.spacing.sm,
+          fontSize: SeniorDesignTokens.fontSize.medium,
+          fontWeight: '600',
+          color: SeniorDesignTokens.colors.info,
+          display: 'flex',
+          alignItems: 'center',
+          gap: SeniorDesignTokens.spacing.sm
+        }}>
+          🔮 Nästa steg:
+        </h4>
+        <p style={{
+          margin: 0,
+          fontSize: SeniorDesignTokens.fontSize.medium,
+          lineHeight: '1.6',
+          color: SeniorDesignTokens.colors.text
+        }}>
+          {projectSummary.nextMilestone}
         </p>
       </div>
 
-      {/* Övergripande framsteg */}
-      <div className="progress-section mb-6 p-4 bg-gray-50 rounded-lg">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold text-gray-800">Övergripande Framsteg</h3>
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-gray-800">{overview.overallProgress}%</span>
-            <span className="text-sm text-gray-600">klart</span>
-          </div>
-        </div>
-        
-        {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-4 mb-3">
-          <div
-            className={`h-4 rounded-full transition-all duration-1000 ${getProgressColor(overview.overallProgress)}`}
-            style={{ width: `${overview.overallProgress}%` }}
-          />
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">
-            {getProgressMessage(overview.overallProgress)}
-          </span>
-          {overview.estimatedCompletion && (
-            <span className="text-sm text-gray-600">
-              Beräknat klart: <span className="font-medium">{overview.estimatedCompletion}</span>
-            </span>
-          )}
-        </div>
+      {/* Senaste uppdatering */}
+      <div style={{
+        fontSize: SeniorDesignTokens.fontSize.small,
+        color: SeniorDesignTokens.colors.textMuted,
+        textAlign: 'center',
+        marginTop: SeniorDesignTokens.spacing.lg,
+        fontStyle: 'italic'
+      }}>
+        {formatLastUpdate(projectSummary.lastUpdate)}
       </div>
 
-      {/* Nuvarande fas */}
-      <div className="current-phase mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <div className="flex items-center mb-2">
-          <span className="text-xl mr-2">📍</span>
-          <h3 className="text-lg font-semibold text-blue-800">Nuvarande Fas</h3>
-        </div>
-        
-        <div className="flex items-center space-x-3">
-          <div className="phase-badge px-3 py-1 bg-blue-100 rounded-full border border-blue-300">
-            <span className="text-blue-800 font-medium">{overview.currentPhase}</span>
-          </div>
-          <span className="text-blue-700">
-            {overview.currentPhase === 'Crawl' && 'Bygger grunderna'}
-            {overview.currentPhase === 'Walk' && 'Skapar funktionalitet'}
-            {overview.currentPhase === 'Run' && 'Gör det användarvänligt'}
-            {overview.currentPhase === 'Fly' && 'Gör det intelligent'}
-          </span>
-        </div>
+      {/* Visa mer/mindre knapp */}
+      <div style={{ textAlign: 'center' }}>
+        <button
+          style={{
+            ...ToggleButton,
+            backgroundColor: showDetails ? SeniorDesignTokens.colors.primary : 'transparent',
+            color: showDetails ? SeniorDesignTokens.colors.background : SeniorDesignTokens.colors.primary,
+            transform: isAnimating ? 'scale(0.95)' : 'scale(1)'
+          }}
+          onClick={handleToggleDetails}
+          onMouseEnter={(e) => {
+            if (!showDetails) {
+              e.currentTarget.style.backgroundColor = SeniorDesignTokens.colors.primaryLight;
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!showDetails) {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }
+          }}
+        >
+          {showDetails ? '📖 Visa mindre' : '📋 Visa mer information'}
+        </button>
       </div>
 
-      {/* Vad som redan är klart */}
-      {overview.keyAchievements && overview.keyAchievements.length > 0 && (
-        <div className="achievements">
-          <div className="flex items-center mb-4">
-            <span className="text-xl mr-2">🏆</span>
-            <h3 className="text-lg font-semibold text-gray-800">Vad Vi Redan Har Åstadkommit</h3>
+      {/* Utökad information (visas när showDetails är true) */}
+      {showDetails && (
+        <div style={{
+          marginTop: SeniorDesignTokens.spacing.lg,
+          padding: SeniorDesignTokens.spacing.lg,
+          backgroundColor: SeniorDesignTokens.colors.background,
+          borderRadius: SeniorDesignTokens.borderRadius.md,
+          border: `1px solid ${SeniorDesignTokens.colors.border}`,
+          animation: 'fadeIn 0.3s ease-out'
+        }}>
+          <h4 style={{
+            margin: 0,
+            marginBottom: SeniorDesignTokens.spacing.md,
+            fontSize: SeniorDesignTokens.fontSize.medium,
+            fontWeight: '600',
+            color: SeniorDesignTokens.colors.primary
+          }}>
+            📚 Mer om ditt projekt
+          </h4>
+          
+          <div style={{ marginBottom: SeniorDesignTokens.spacing.md }}>
+            <strong>Projekttyp:</strong> Senior-vänlig applikation
           </div>
           
-          <div className="space-y-3">
-            {overview.keyAchievements.map((achievement, index) => (
-              <div key={index} className="achievement-item flex items-start space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex-shrink-0 mt-1">
-                  <span className="text-green-600 text-lg">✅</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-green-800 font-medium">{achievement}</p>
-                </div>
-              </div>
-            ))}
+          <div style={{ marginBottom: SeniorDesignTokens.spacing.md }}>
+            <strong>Startdatum:</strong> {projectSummary.lastUpdate.toLocaleDateString('sv-SE', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </div>
+          
+          <div style={{ marginBottom: SeniorDesignTokens.spacing.md }}>
+            <strong>Fokus:</strong> Enkelhet, tillgänglighet och användarvänlighet
+          </div>
+          
+          <div style={{
+            padding: SeniorDesignTokens.spacing.md,
+            backgroundColor: SeniorDesignTokens.colors.successLight,
+            borderRadius: SeniorDesignTokens.borderRadius.md,
+            border: `1px solid ${SeniorDesignTokens.colors.success}`,
+            marginTop: SeniorDesignTokens.spacing.md
+          }}>
+            <div style={{
+              fontSize: SeniorDesignTokens.fontSize.medium,
+              fontWeight: '600',
+              color: SeniorDesignTokens.colors.success,
+              marginBottom: SeniorDesignTokens.spacing.sm,
+              display: 'flex',
+              alignItems: 'center',
+              gap: SeniorDesignTokens.spacing.sm
+            }}>
+              ✨ Vad gör detta projekt speciellt?
+            </div>
+            <p style={{
+              margin: 0,
+              lineHeight: '1.6',
+              color: SeniorDesignTokens.colors.text
+            }}>
+              Detta projekt är designat specifikt för att vara enkelt och trevligt att använda. 
+              Vi fokuserar på stora knappar, tydlig text och ett vänligt gränssnitt som känns 
+              bekant och tryggt.
+            </p>
           </div>
         </div>
       )}
 
-      {/* Uppmuntrande meddelande baserat på framsteg */}
-      <div className="encouragement mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-        <div className="flex items-center">
-          <span className="text-2xl mr-3">
-            {overview.overallProgress >= 80 ? '🎉' : 
-             overview.overallProgress >= 60 ? '🚀' : 
-             overview.overallProgress >= 40 ? '💪' : '🌱'}
-          </span>
-          <div>
-            <div className="font-semibold text-gray-800">
-              {overview.overallProgress >= 80 ? 'Fantastiskt arbete!' : 
-               overview.overallProgress >= 60 ? 'Riktigt bra framsteg!' : 
-               overview.overallProgress >= 40 ? 'Vi är på rätt väg!' : 'En bra start!'}
-            </div>
-            <div className="text-sm text-gray-600">
-              {overview.overallProgress >= 80 ? 'Projektet närmar sig slutet och kommer snart att vara redo att användas.' : 
-               overview.overallProgress >= 60 ? 'Vi har kommit långt och systemet börjar ta form.' : 
-               overview.overallProgress >= 40 ? 'Grundarbetet är gjort och nu bygger vi vidare.' : 'Vi har lagt grunden och arbetar stadigt framåt.'}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Snabb-statistik */}
-      <div className="quick-stats mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="stat-item text-center p-3 bg-gray-50 rounded-lg">
-          <div className="text-2xl font-bold text-blue-600">{overview.currentPhase}</div>
-          <div className="text-xs text-gray-600">Nuvarande Fas</div>
-        </div>
+      {/* CSS för animationer */}
+      <style>{`
+        @keyframes shimmer {
+          0% { left: -100%; }
+          100% { left: 100%; }
+        }
         
-        <div className="stat-item text-center p-3 bg-gray-50 rounded-lg">
-          <div className="text-2xl font-bold text-green-600">{overview.overallProgress}%</div>
-          <div className="text-xs text-gray-600">Klart</div>
-        </div>
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         
-        <div className="stat-item text-center p-3 bg-gray-50 rounded-lg">
-          <div className="text-2xl font-bold text-purple-600">{overview.keyAchievements?.length || 0}</div>
-          <div className="text-xs text-gray-600">Milstones</div>
-        </div>
-        
-        <div className="stat-item text-center p-3 bg-gray-50 rounded-lg">
-          <div className="text-2xl font-bold text-orange-600">
-            {overview.estimatedCompletion?.split(' ')[1] || '?'}
-          </div>
-          <div className="text-xs text-gray-600">Månader Kvar</div>
-        </div>
-      </div>
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

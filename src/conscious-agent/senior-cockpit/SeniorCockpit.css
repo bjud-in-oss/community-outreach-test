@@ -1,0 +1,303 @@
+/**
+ * Senior Cockpit CSS - Responsiv design för alla enheter
+ * Fokus på tillgänglighet och senior-vänlighet
+ */
+
+/* Grundläggande reset och senior-vänliga standarder */
+.senior-cockpit * {
+  box-sizing: border-box;
+}
+
+.senior-cockpit {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsiv grid för huvudinnehåll */
+.senior-cockpit-main {
+  display: grid;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Desktop layout */
+@media (min-width: 1024px) {
+  .senior-cockpit-main {
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+  }
+  
+  .senior-cockpit-main > section:first-child {
+    grid-column: 1 / -1; /* Projektöversikt tar full bredd */
+  }
+}
+
+/* Tablet layout */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .senior-cockpit-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  .senior-cockpit-main > section:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobil layout */
+@media (max-width: 767px) {
+  .senior-cockpit-main {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+  
+  .senior-cockpit-header {
+    padding: 1.5rem 1rem !important;
+  }
+  
+  .senior-cockpit-card {
+    padding: 1.5rem !important;
+  }
+  
+  .senior-cockpit-title {
+    font-size: 2rem !important;
+  }
+}
+
+/* Extra stora skärmar */
+@media (min-width: 1536px) {
+  .senior-cockpit-main {
+    max-width: 1400px;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  
+  .senior-cockpit-main > section:first-child {
+    grid-column: 1 / -1;
+  }
+  
+  .senior-cockpit-main > section:nth-child(2) {
+    grid-column: 1 / 3;
+  }
+}
+
+/* Tillgänglighetsförbättringar */
+
+/* Fokusringar för tangentbordsnavigation */
+.senior-cockpit button:focus,
+.senior-cockpit [tabindex]:focus {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Hover-effekter för interaktiva element */
+.senior-cockpit button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: all 0.2s ease-out;
+}
+
+.senior-cockpit button:active {
+  transform: translateY(0);
+}
+
+/* Animationer för reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .senior-cockpit *,
+  .senior-cockpit *::before,
+  .senior-cockpit *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hög kontrast-läge */
+@media (prefers-contrast: high) {
+  .senior-cockpit {
+    --border-color: #000000;
+    --text-color: #000000;
+    --background-color: #ffffff;
+  }
+  
+  .senior-cockpit-card {
+    border: 2px solid var(--border-color) !important;
+  }
+}
+
+/* Mörkt läge stöd (för framtiden) */
+@media (prefers-color-scheme: dark) {
+  .senior-cockpit {
+    --background-color: #1f2937;
+    --surface-color: #374151;
+    --text-color: #f9fafb;
+    --text-secondary: #d1d5db;
+    --border-color: #4b5563;
+  }
+}
+
+/* Print-stilar */
+@media print {
+  .senior-cockpit {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .senior-cockpit-card {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  
+  .senior-cockpit button {
+    display: none;
+  }
+}
+
+/* Specialstöd för äldre webbläsare */
+.senior-cockpit-fallback {
+  display: none;
+}
+
+/* Om CSS Grid inte stöds */
+@supports not (display: grid) {
+  .senior-cockpit-main {
+    display: block;
+  }
+  
+  .senior-cockpit-card {
+    margin-bottom: 2rem;
+  }
+  
+  .senior-cockpit-fallback {
+    display: block;
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+}
+
+/* Touch-vänliga förbättringar */
+@media (hover: none) and (pointer: coarse) {
+  .senior-cockpit button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px 24px;
+  }
+  
+  .senior-cockpit-card {
+    padding: 2rem;
+  }
+}
+
+/* Specialstöd för mycket stora textstorlekar */
+@media (min-resolution: 2dppx) {
+  .senior-cockpit {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+/* Animationer för laddning */
+.senior-cockpit-loading {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes gentle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Specialstöd för skärmläsare */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Fokusbar skip-länk */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #2563eb;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Utility classes för senior-vänlig design */
+.senior-text-large {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.senior-text-xl {
+  font-size: 2rem;
+  line-height: 1.3;
+}
+
+.senior-button-large {
+  min-height: 56px;
+  min-width: 120px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 16px 32px;
+  border-radius: 12px;
+}
+
+.senior-spacing-comfortable {
+  margin-bottom: 2rem;
+}
+
+.senior-spacing-generous {
+  margin-bottom: 3rem;
+}
+
+/* Specialstöd för Windows High Contrast Mode */
+@media screen and (-ms-high-contrast: active) {
+  .senior-cockpit-card {
+    border: 2px solid WindowText;
+  }
+  
+  .senior-cockpit button {
+    border: 2px solid ButtonText;
+  }
+}
+
+/* Specialstöd för iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .senior-cockpit {
+    -webkit-tap-highlight-color: rgba(37, 99, 235, 0.3);
+  }
+  
+  .senior-cockpit button {
+    -webkit-appearance: none;
+    border-radius: 12px;
+  }
+}
