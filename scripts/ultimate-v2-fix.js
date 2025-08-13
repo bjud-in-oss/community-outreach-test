@@ -10,46 +10,77 @@ function fixAllV2Issues() {
     .filter(file => file.endsWith('.md'))
     .filter(file => !file.startsWith('README') && !file.startsWith('CONTRIBUTING') && !file.startsWith('AGENTS'));
   
-  const v2Pattern = /^\d+_[^_]*[1-4][🟢🟡🔵⚫]_/;
-  const nonCompliantFiles = files.filter(file => !v2Pattern.test(file));
-  
-  console.log(`Found ${nonCompliantFiles.length} files needing V2 fixes:`);
+  console.log(`Found ${files.length} files to check:`);
   
   let fixed = 0;
   
-  for (const file of nonCompliantFiles) {
+  for (const file of files) {
     try {
       let newName = file;
+      let needsFix = false;
       
       // Remove any remaining encoding issues
-      newName = newName.replace(/�/g, '');
+      if (newName.includes('�')) {
+        newName = newName.replace(/�/g, '');
+        needsFix = true;
+      }
       
       // Fix double status issues (like 1🟢1🟢 -> 1🟢, 3🔵3🔵 -> 3🔵, etc.)
-      newName = newName.replace(/([1-4][🟢🟡🔵⚫])[1-4][🟢🟡🔵⚫]/g, '$1');
+      if (newName.match(/[1-4][🟢🟡🔵⚫][1-4][🟢🟡🔵⚫]/)) {
+        newName = newName.replace(/([1-4][🟢🟡🔵⚫])[1-4][🟢🟡🔵⚫]/g, '$1');
+        needsFix = true;
+      }
       
-      // Fix mixed status issues (like 2🟡1🟢 -> 1🟢, 3🔵1🟢 -> 3🔵, etc.)
-      newName = newName.replace(/[1-4][🟢🟡🔵⚫]([1-4][🟢🟡🔵⚫])/g, '$1');
+      // Fix mixed status issues (like 2🟡1🟢 -> 1🟢, 3🔵1🟢 -> 1🟢, etc.)
+      // Priority: 1🟢 > 2🟡 > 3🔵 > 4⚫
+      if (newName.match(/[2-4][🟢🟡🔵⚫]1🟢/)) {
+        newName = newName.replace(/[2-4][🟢🟡🔵⚫](1🟢)/g, '$1');
+        needsFix = true;
+      } else if (newName.match(/[3-4][🟢🟡🔵⚫]2🟡/)) {
+        newName = newName.replace(/[3-4][🟢🟡🔵⚫](2🟡)/g, '$1');
+        needsFix = true;
+      } else if (newName.match(/4⚫3🔵/)) {
+        newName = newName.replace(/4⚫(3🔵)/g, '$1');
+        needsFix = true;
+      }
       
-      // Fix old emoji format (🟢 without number -> 1🟢)
-      newName = newName.replace(/([^1-4])🟢_/, '$11🟢_');
-      newName = newName.replace(/([^1-4])🟡_/, '$12🟡_');
-      newName = newName.replace(/([^1-4])🔵_/, '$13🔵_');
-      newName = newName.replace(/([^1-4])⚫_/, '$14⚫_');
+      // Fix emoji without status number (🟢 -> 1🟢, 🟡 -> 2🟡, etc.)
+      if (newName.match(/[^1-4]🟢_/)) {
+        newName = newName.replace(/([^1-4])🟢_/g, '$11🟢_');
+        needsFix = true;
+      }
+      if (newName.match(/[^1-4]🟡_/)) {
+        newName = newName.replace(/([^1-4])🟡_/g, '$12🟡_');
+        needsFix = true;
+      }
+      if (newName.match(/[^1-4]🔵_/)) {
+        newName = newName.replace(/([^1-4])🔵_/g, '$13🔵_');
+        needsFix = true;
+      }
+      if (newName.match(/[^1-4]⚫_/)) {
+        newName = newName.replace(/([^1-4])⚫_/g, '$14⚫_');
+        needsFix = true;
+      }
       
       // Fix missing status after emoji (like 🎯_ -> 🎯1🟢_)
-      newName = newName.replace(/([🎯📋🤖🎛️🧪🌉⚙️🎭🔧🧠🏛️🌍👨‍👩‍👧‍👦📊🎨💝👥💡📝🗑️])_/, '$11🟢_');
+      if (newName.match(/[🎯📋🤖🎛️🧪🌉⚙️🎭🔧🧠🏛️🌍👨‍👩‍👧‍👦📊🎨💝👥💡📝🗑️]_/)) {
+        newName = newName.replace(/([🎯📋🤖🎛️🧪🌉⚙️🎭🔧🧠🏛️🌍👨‍👩‍👧‍👦📊🎨💝👥💡📝🗑️])_/g, '$11🟢_');
+        needsFix = true;
+      }
       
       // Fix specific problematic patterns
       if (newName.includes('990_🗑️1🟢_')) {
         newName = newName.replace('990_🗑️1🟢_', '990_🗑️4⚫_');
+        needsFix = true;
       }
       
       // Fix files that still have encoding issues in the middle
       if (newName.includes('999_🗑️4⚫_REALTIME_UPDATES_�_')) {
         newName = newName.replace('999_🗑️4⚫_REALTIME_UPDATES_�_', '999_🗑️4⚫_REALTIME_UPDATES_');
+        needsFix = true;
       }
       
-      if (newName !== file) {
+      if (needsFix && newName !== file) {
         console.log(`🔄 ${file}`);
         console.log(`   → ${newName}`);
         
@@ -64,8 +95,8 @@ function fixAllV2Issues() {
         
         fixed++;
         console.log(`✅ Fixed: ${newName}`);
-      } else {
-        console.log(`⚠️  Could not fix: ${file}`);
+      } else if (needsFix) {
+        console.log(`⚠️  Could not fix: ${file} (no change generated)`);
       }
     } catch (error) {
       console.error(`❌ Failed to fix ${file}:`, error.message);
@@ -80,6 +111,7 @@ function fixAllV2Issues() {
     .filter(file => file.endsWith('.md'))
     .filter(file => !file.startsWith('README') && !file.startsWith('CONTRIBUTING') && !file.startsWith('AGENTS'));
   
+  const v2Pattern = /^\d+_[^_]*[1-4][🟢🟡🔵⚫]_/;
   let compliant = 0;
   let nonCompliant = 0;
   
