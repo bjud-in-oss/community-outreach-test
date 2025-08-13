@@ -1,0 +1,19 @@
+{
+  "name": "Senior Language Guard",
+  "description": "Automatically checks for technical jargon and suggests senior-friendly alternatives",
+  "trigger": {
+    "type": "file_save",
+    "pattern": "src/**/*.{tsx,jsx,ts,js}",
+    "exclude": ["**/*.test.*", "**/*.spec.*"]
+  },
+  "actions": [
+    {
+      "type": "script",
+      "script": "scripts/check-senior-language.js",
+      "timeout": 15000,
+      "autoApprove": false
+    }
+  ],
+  "enabled": true,
+  "priority": 2
+}

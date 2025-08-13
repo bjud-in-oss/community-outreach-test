@@ -56,7 +56,7 @@
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
-      "disabled": true,
+      "disabled": false,
       "autoApprove": [
         "read_file",
         "write_file",
@@ -71,7 +71,7 @@
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       },
-      "disabled": true,
+      "disabled": false,
       "autoApprove": [
         "store_memory",
         "retrieve_memory",

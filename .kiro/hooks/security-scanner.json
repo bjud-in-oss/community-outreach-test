@@ -1,0 +1,19 @@
+{
+  "name": "Security Scanner",
+  "description": "Scans for hardcoded secrets and security vulnerabilities",
+  "trigger": {
+    "type": "file_save",
+    "pattern": "**/*.{js,ts,json,md,env}",
+    "exclude": ["node_modules/**", "**/*.log"]
+  },
+  "actions": [
+    {
+      "type": "script",
+      "script": "scripts/security-scan.js",
+      "timeout": 20000,
+      "autoApprove": false
+    }
+  ],
+  "enabled": true,
+  "priority": 3
+}
