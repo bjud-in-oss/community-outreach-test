@@ -1,0 +1,19 @@
+{
+  "name": "V2 Format Validator",
+  "description": "Automatically validates and fixes V2 format compliance when markdown files are saved",
+  "trigger": {
+    "type": "file_save",
+    "pattern": "*.md",
+    "exclude": ["README.md", "CONTRIBUTING.md", "AGENTS.md"]
+  },
+  "actions": [
+    {
+      "type": "script",
+      "script": "scripts/auto-v2-check.js",
+      "timeout": 30000,
+      "autoApprove": true
+    }
+  ],
+  "enabled": true,
+  "priority": 1
+}
