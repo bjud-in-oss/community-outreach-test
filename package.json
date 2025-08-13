@@ -26,7 +26,9 @@
     "sandbox-test": "node src/core-agent/tools/sandbox-test.js",
     "governance": "node src/communication-bridge/guardrails/governance-check.js",
     "monitor": "node src/infrastructure/monitoring/monitor.js",
-    "health-check": "curl http://localhost:3000/api/health"
+    "health-check": "curl http://localhost:3000/api/health",
+    "test:bridge": "node --loader ts-node/esm src/communication-bridge/run-tests.ts",
+    "test:bridge-integration": "node --loader ts-node/esm src/communication-bridge/test-bridge-integration.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.8.0",

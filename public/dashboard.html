@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Senior Cockpit - Ditt Projektöversikt</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Senior-friendly styling */
+        body {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .senior-button {
+            min-height: 48px;
+            min-width: 120px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .task-card {
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .task-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-pending { background-color: #f59e0b; }
+        .status-approved { background-color: #10b981; }
+        .status-rejected { background-color: #ef4444; }
+        .status-completed { background-color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="dashboard-root"></div>
+
+    <script type="text/babel">
+        // Simple Task Card Component (inline version of rescued TaskCard.tsx)
+        const TaskCard = ({ task, onApprove, onReject }) => {
+            const statusColors = {
+                pending: 'status-pending',
+                approved: 'status-approved',
+                rejected: 'status-rejected',
+                completed: 'status-completed'
+            };
+
+            const statusText = {
+                pending: 'Väntar på godkännande',
+                approved: 'Godkänd',
+                rejected: 'Avvisad',
+                completed: 'Klar'
+            };
+
+            return (
+                <div className="task-card bg-white rounded-lg shadow-md p-6 mb-4">
+                    <div className="mb-4">
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">{task.title}</h3>
+                        <p className="text-gray-600 mb-3">{task.description}</p>
+                        
+                        <div className="flex items-center mb-2">
+                            <span className={`status-indicator ${statusColors[task.status]}`}></span>
+                            <span className="text-sm text-gray-700">{statusText[task.status]}</span>
+                        </div>
+                        
+                        {task.agentType && (
+                            <div className="text-xs text-gray-500">
+                                Agent: {task.agentType} | Komplexitet: {task.complexity}
+                            </div>
+                        )}
+                    </div>
+                    
+                    {task.status === 'pending' && (
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => onApprove(task.id)}
+                                className="senior-button bg-green-500 hover:bg-green-600 text-white rounded-lg px-6 py-3 transition-colors"
+                            >
+                                ✅ Godkänn
+                            </button>
+                            <button
+                                onClick={() => onReject(task.id)}
+                                className="senior-button bg-red-500 hover:bg-red-600 text-white rounded-lg px-6 py-3 transition-colors"
+                            >
+                                🚫 Avvisa
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Main Dashboard Component
+        const Dashboard = () => {
+            const [tasks, setTasks] = React.useState([]);
+            const [stats, setStats] = React.useState({
+                total: 0, pending: 0, approved: 0, rejected: 0, completed: 0
+            });
+            const [loading, setLoading] = React.useState(true);
+            const [error, setError] = React.useState(null);
+
+            const loadTasks = async () => {
+                try {
+                    setLoading(true);
+                    const response = await fetch('/api/status');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    const tasksData = data.tasks || [];
+                    
+                    setTasks(tasksData);
+                    
+                    // Calculate stats
+                    const newStats = {
+                        total: tasksData.length,
+                        pending: tasksData.filter(t => t.status === 'pending').length,
+                        approved: tasksData.filter(t => t.status === 'approved').length,
+                        rejected: tasksData.filter(t => t.status === 'rejected').length,
+                        completed: tasksData.filter(t => t.status === 'completed').length
+                    };
+                    setStats(newStats);
+                    
+                    setError(null);
+                } catch (err) {
+                    console.error('Error loading tasks:', err);
+                    setError('Kunde inte ladda uppgifter. Kontrollera att servern körs på port 3000.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const handleApprove = async (taskId) => {
+                try {
+                    const response = await fetch(`/api/tasks/${taskId}/approve`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        setTasks(prevTasks => 
+                            prevTasks.map(task => 
+                                task.id === taskId 
+                                    ? { ...task, status: 'approved' }
+                                    : task
+                            )
+                        );
+                        alert('✅ Uppgiften godkändes!');
+                    } else {
+                        throw new Error('Kunde inte godkänna uppgiften');
+                    }
+                } catch (err) {
+                    console.error('Error approving task:', err);
+                    alert('❌ Något gick fel. Försök igen.');
+                }
+            };
+
+            const handleReject = async (taskId) => {
+                try {
+                    const response = await fetch(`/api/tasks/${taskId}/reject`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        setTasks(prevTasks => 
+                            prevTasks.map(task => 
+                                task.id === taskId 
+                                    ? { ...task, status: 'rejected' }
+                                    : task
+                            )
+                        );
+                        alert('🚫 Uppgiften avvisades.');
+                    } else {
+                        throw new Error('Kunde inte avvisa uppgiften');
+                    }
+                } catch (err) {
+                    console.error('Error rejecting task:', err);
+                    alert('❌ Något gick fel. Försök igen.');
+                }
+            };
+
+            React.useEffect(() => {
+                loadTasks();
+                const interval = setInterval(loadTasks, 30000);
+                return () => clearInterval(interval);
+            }, []);
+
+            if (loading && tasks.length === 0) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                            <p className="text-gray-600">Laddar uppgifter...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (error) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="text-center bg-red-50 p-8 rounded-lg max-w-md">
+                            <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                            <h2 className="text-xl font-semibold text-red-800 mb-2">Något gick fel</h2>
+                            <p className="text-red-600 mb-4">{error}</p>
+                            <button 
+                                onClick={loadTasks}
+                                className="senior-button bg-red-500 hover:bg-red-600 text-white rounded-lg px-6 py-3"
+                            >
+                                Försök igen
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-gray-100 p-6">
+                    {/* Header */}
+                    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div className="text-center mb-6">
+                            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                                🎭 Senior Cockpit - Ditt Projektöversikt
+                            </h1>
+                            <p className="text-lg text-gray-600 mb-4">
+                                Välkommen till ditt enkla projektöversikt. Här ser du vad som händer med ditt projekt utan teknisk komplexitet.
+                            </p>
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                                <p className="text-blue-800">
+                                    🚀 <strong>Nyhet:</strong> Vi har uppgraderat till Senior Cockpit - ett intelligent gränssnitt som döljer all teknisk komplexitet!
+                                </p>
+                                <a href="/senior-cockpit.html" className="inline-block mt-3 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                                    ✨ Prova Nya Senior Cockpit
+                                </a>
+                            </div>
+                        </div>
+                        
+                        {/* Statistics */}
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            <div className="bg-blue-50 p-4 rounded-lg text-center">
+                                <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+                                <div className="text-sm text-blue-800">Totalt</div>
+                            </div>
+                            <div className="bg-yellow-50 p-4 rounded-lg text-center">
+                                <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+                                <div className="text-sm text-yellow-800">Väntar</div>
+                            </div>
+                            <div className="bg-green-50 p-4 rounded-lg text-center">
+                                <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
+                                <div className="text-sm text-green-800">Godkända</div>
+                            </div>
+                            <div className="bg-red-50 p-4 rounded-lg text-center">
+                                <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
+                                <div className="text-sm text-red-800">Avvisade</div>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-lg text-center">
+                                <div className="text-2xl font-bold text-gray-600">{stats.completed}</div>
+                                <div className="text-sm text-gray-800">Klara</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Tasks */}
+                    <div className="max-w-4xl mx-auto">
+                        {tasks.length === 0 ? (
+                            <div className="text-center py-12 bg-white rounded-lg shadow-md">
+                                <div className="text-gray-400 text-6xl mb-4">📝</div>
+                                <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                                    Inga uppgifter än
+                                </h3>
+                                <p className="text-gray-500">
+                                    Din AI-assistent har inte skapat några uppgifter än.
+                                </p>
+                            </div>
+                        ) : (
+                            tasks.map(task => (
+                                <TaskCard
+                                    key={task.id}
+                                    task={task}
+                                    onApprove={handleApprove}
+                                    onReject={handleReject}
+                                />
+                            ))
+                        )}
+                    </div>
+
+                    {/* Refresh Button */}
+                    <div className="fixed bottom-6 right-6">
+                        <button
+                            onClick={loadTasks}
+                            disabled={loading}
+                            className="senior-button bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-3 shadow-lg transition-colors disabled:opacity-50"
+                        >
+                            {loading ? '🔄' : '↻'} Uppdatera
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the dashboard
+        ReactDOM.render(<Dashboard />, document.getElementById('dashboard-root'));
+    </script>
+</body>
+</html>

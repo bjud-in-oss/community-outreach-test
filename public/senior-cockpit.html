@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Senior Cockpit - Ditt Projektöversikt</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Senior-friendly styling - Enhanced for Senior Cockpit */
+        body {
+            font-size: 18px;
+            line-height: 1.8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .senior-button {
+            min-height: 56px;
+            min-width: 140px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .senior-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .cockpit-card {
+            border: 3px solid #e5e7eb;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+        
+        .cockpit-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .phase-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 12px;
+        }
+        
+        .phase-crawl { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .phase-walk { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+        .phase-run { background: linear-gradient(135deg, #34d399, #10b981); }
+        .phase-fly { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+        
+        .progress-bar {
+            height: 12px;
+            border-radius: 6px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.8s ease;
+        }
+        
+        .notification-success { border-left: 6px solid #10b981; background: #f0fdf4; }
+        .notification-info { border-left: 6px solid #3b82f6; background: #eff6ff; }
+        .notification-warning { border-left: 6px solid #f59e0b; background: #fffbeb; }
+        
+        .senior-text {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .senior-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+        
+        .achievement-badge {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div id="senior-cockpit-root"></div>
+
+    <script type="text/babel">
+        // Senior Cockpit Main Component
+        const SeniorCockpit = () => {
+            const [seniorView, setSeniorView] = React.useState(null);
+            const [loading, setLoading] = React.useState(true);
+            const [error, setError] = React.useState(null);
+            const [lastUpdated, setLastUpdated] = React.useState(new Date());
+            const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+            const [updateStatus, setUpdateStatus] = React.useState('connected');
+
+            // Mock Senior View data (will be replaced with real API call)
+            const mockSeniorView = {
+                projectOverview: {
+                    title: 'Community Outreach Platform',
+                    description: 'En plattform som hjälper seniorer att skapa egna digitala verktyg utan teknisk komplexitet. Vi bygger ett system som förstår vad du vill ha och skapar det åt dig.',
+                    currentPhase: 'Crawl',
+                    overallProgress: 65,
+                    estimatedCompletion: 'Om 2-3 veckor',
+                    keyAchievements: [
+                        'Säker kommunikation mellan systemdelar fungerar',
+                        '3 viktiga uppgifter slutförda',
+                        '12 kvalitetstester godkända',
+                        'Systemet är aktivt och fungerar',
+                        'Hög systemstabilitet och tillförlitlighet'
+                    ]
+                },
+                recentProgress: {
+                    thisWeek: 'Vi slutförde översättningssystemet som gör att du kan prata med systemet på vanlig svenska istället för tekniska termer. Vi integrerade också säkerhetssystem för att dölja all teknisk komplexitet.',
+                    nextWeek: 'Nästa steg är att skapa det visuella gränssnittet där du kan se projektets framsteg på ett enkelt sätt. Vi kommer också att förbättra hur systemet förstår dina önskemål.',
+                    confidence: 85
+                },
+                notifications: [
+                    {
+                        id: 'success-1',
+                        title: 'Framsteg gjort! 🎉',
+                        message: 'Översättningssystemet är nu klart. Detta betyder att du kan kommunicera med systemet på vanlig svenska.',
+                        priority: 'success',
+                        timestamp: new Date(Date.now() - 30 * 60 * 1000),
+                        actionRequired: false
+                    },
+                    {
+                        id: 'info-1',
+                        title: 'Nästa steg',
+                        message: 'Vi arbetar nu på att skapa det visuella gränssnittet för dig. Du kommer snart att kunna se projektets framsteg på ett mycket enklare sätt.',
+                        priority: 'info',
+                        timestamp: new Date(),
+                        actionRequired: false
+                    }
+                ],
+                lastUpdated: new Date()
+            };
+
+            // Load Senior View data with real-time status
+            const loadSeniorView = async () => {
+                try {
+                    setLoading(true);
+                    setUpdateStatus('updating');
+                    
+                    // Call real API endpoint
+                    const response = await fetch('/api/senior-view');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const apiResult = await response.json();
+                    
+                    if (apiResult.success) {
+                        setSeniorView(apiResult.data);
+                        setLastUpdated(new Date());
+                        setError(null);
+                        setUpdateStatus('connected');
+                        console.log('✅ Senior View loaded successfully:', apiResult.seniorFriendlyMessage);
+                    } else {
+                        throw new Error(apiResult.error || 'Failed to load senior view');
+                    }
+                    
+                } catch (err) {
+                    console.error('Error loading Senior View:', err);
+                    setError('Kunde inte ladda projektinformation. Vi försöker igen automatiskt.');
+                    setUpdateStatus('error');
+                    
+                    // Fallback to mock data if API fails
+                    setSeniorView(mockSeniorView);
+                    setLastUpdated(new Date());
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            // Monitor online status
+            React.useEffect(() => {
+                const handleOnline = () => {
+                    setIsOnline(true);
+                    setUpdateStatus('connected');
+                    console.log('🌐 Connection restored, refreshing...');
+                    loadSeniorView();
+                };
+                
+                const handleOffline = () => {
+                    setIsOnline(false);
+                    setUpdateStatus('offline');
+                    console.log('📴 Connection lost');
+                };
+                
+                window.addEventListener('online', handleOnline);
+                window.addEventListener('offline', handleOffline);
+                
+                return () => {
+                    window.removeEventListener('online', handleOnline);
+                    window.removeEventListener('offline', handleOffline);
+                };
+            }, []);
+
+            // Phase indicator component
+            const PhaseIndicator = ({ phase, progress }) => {
+                const phaseConfig = {
+                    'Crawl': { emoji: '🐣', name: 'Grundläggande', color: 'phase-crawl', description: 'Vi bygger fundamentet' },
+                    'Walk': { emoji: '🚶', name: 'Utveckling', color: 'phase-walk', description: 'Systemet tar form' },
+                    'Run': { emoji: '🏃', name: 'Förbättring', color: 'phase-run', description: 'Fokus på användarvänlighet' },
+                    'Fly': { emoji: '🚀', name: 'Autonom', color: 'phase-fly', description: 'Självförbättrande system' }
+                };
+
+                const config = phaseConfig[phase] || phaseConfig['Crawl'];
+
+                return (
+                    <div className="cockpit-card p-6 mb-6">
+                        <div className="flex items-center mb-4">
+                            <span className={`phase-indicator ${config.color}`}></span>
+                            <div>
+                                <h3 className="text-xl font-bold text-gray-800">
+                                    {config.emoji} {config.name}-fasen
+                                </h3>
+                                <p className="text-gray-600">{config.description}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="mb-2">
+                            <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Framsteg</span>
+                                <span>{progress}%</span>
+                            </div>
+                            <div className="progress-bar">
+                                <div 
+                                    className="progress-fill" 
+                                    style={{ width: `${progress}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Notification component
+            const NotificationCard = ({ notification }) => {
+                const priorityClass = `notification-${notification.priority}`;
+                const priorityEmoji = {
+                    'success': '✅',
+                    'info': 'ℹ️',
+                    'warning': '⚠️'
+                };
+
+                return (
+                    <div className={`${priorityClass} p-4 rounded-lg mb-3`}>
+                        <div className="flex items-start">
+                            <span className="text-xl mr-3">{priorityEmoji[notification.priority]}</span>
+                            <div className="flex-1">
+                                <h4 className="font-bold text-gray-800 mb-1">{notification.title}</h4>
+                                <p className="text-gray-700">{notification.message}</p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                    {notification.timestamp.toLocaleString('sv-SE')}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Real-time updates with intelligent polling
+            React.useEffect(() => {
+                loadSeniorView();
+                
+                // Start with shorter interval for better responsiveness
+                const interval = setInterval(loadSeniorView, 30 * 1000); // 30 seconds
+                
+                // Also listen for visibility changes to update when user returns
+                const handleVisibilityChange = () => {
+                    if (!document.hidden) {
+                        console.log('🔄 Page became visible, refreshing Senior View...');
+                        loadSeniorView();
+                    }
+                };
+                
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                
+                return () => {
+                    clearInterval(interval);
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                };
+            }, []);
+
+            // Loading state
+            if (loading && !seniorView) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-6"></div>
+                            <p className="senior-text text-gray-600">Laddar din projektöversikt...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Error state
+            if (error) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen p-6">
+                        <div className="text-center bg-red-50 p-8 rounded-2xl max-w-md border-3 border-red-200">
+                            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                            <h2 className="senior-title text-red-800">Något gick fel</h2>
+                            <p className="senior-text text-red-600 mb-6">{error}</p>
+                            <button 
+                                onClick={loadSeniorView}
+                                className="senior-button bg-red-500 hover:bg-red-600 text-white"
+                            >
+                                Försök igen
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (!seniorView) return null;
+
+            return (
+                <div className="min-h-screen p-6">
+                    <div className="max-w-6xl mx-auto">
+                        {/* Header */}
+                        <div className="text-center mb-8">
+                            <h1 className="senior-title text-4xl mb-4">
+                                🎭 Ditt Projekt: {seniorView.projectOverview.title}
+                            </h1>
+                            <p className="senior-text text-gray-600 max-w-3xl mx-auto">
+                                {seniorView.projectOverview.description}
+                            </p>
+                        </div>
+
+                        {/* Phase Progress */}
+                        <PhaseIndicator 
+                            phase={seniorView.projectOverview.currentPhase}
+                            progress={seniorView.projectOverview.overallProgress}
+                        />
+
+                        {/* Main Content Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Recent Progress */}
+                            <div className="cockpit-card p-6">
+                                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                    📈 Senaste Framstegen
+                                </h2>
+                                
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                                        🗓️ Denna vecka
+                                    </h3>
+                                    <p className="senior-text text-gray-600 mb-4">
+                                        {seniorView.recentProgress.thisWeek}
+                                    </p>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                                        ➡️ Nästa vecka
+                                    </h3>
+                                    <p className="senior-text text-gray-600 mb-4">
+                                        {seniorView.recentProgress.nextWeek}
+                                    </p>
+                                </div>
+
+                                <div className="bg-green-50 p-4 rounded-lg">
+                                    <div className="flex items-center">
+                                        <span className="text-2xl mr-3">💪</span>
+                                        <div>
+                                            <p className="font-semibold text-green-800">
+                                                Förtroende för framsteg: {seniorView.recentProgress.confidence}%
+                                            </p>
+                                            <p className="text-sm text-green-600">
+                                                Vi är säkra på att vi är på rätt väg!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Project Status */}
+                            <div className="cockpit-card p-6">
+                                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                    🎯 Projektstatus
+                                </h2>
+                                
+                                <div className="mb-6">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-semibold text-gray-700">Slutförs:</span>
+                                        <span className="text-blue-600 font-bold">
+                                            {seniorView.projectOverview.estimatedCompletion}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                                        🏆 Viktiga Framsteg
+                                    </h3>
+                                    <div className="flex flex-wrap">
+                                        {seniorView.projectOverview.keyAchievements.map((achievement, index) => (
+                                            <span key={index} className="achievement-badge">
+                                                {achievement}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Notifications */}
+                        <div className="mt-8">
+                            <div className="cockpit-card p-6">
+                                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                                    🔔 Senaste Uppdateringar
+                                </h2>
+                                
+                                {seniorView.notifications.length === 0 ? (
+                                    <div className="text-center py-8">
+                                        <div className="text-gray-400 text-4xl mb-3">📭</div>
+                                        <p className="senior-text text-gray-500">
+                                            Inga nya uppdateringar just nu.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        {seniorView.notifications.map(notification => (
+                                            <NotificationCard 
+                                                key={notification.id} 
+                                                notification={notification} 
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Footer with Real-time Status */}
+                        <div className="mt-8 text-center">
+                            {/* Real-time Status Indicator */}
+                            <div className="mb-4 flex items-center justify-center">
+                                <div className={`w-3 h-3 rounded-full mr-2 ${
+                                    updateStatus === 'connected' ? 'bg-green-500' :
+                                    updateStatus === 'updating' ? 'bg-yellow-500 animate-pulse' :
+                                    updateStatus === 'offline' ? 'bg-gray-500' :
+                                    'bg-red-500'
+                                }`}></div>
+                                <span className="text-sm text-gray-600">
+                                    {updateStatus === 'connected' ? '🟢 Uppdateras automatiskt' :
+                                     updateStatus === 'updating' ? '🟡 Uppdaterar...' :
+                                     updateStatus === 'offline' ? '⚫ Offline - Uppdaterar när anslutning återställs' :
+                                     '🔴 Anslutningsproblem - Försöker igen automatiskt'}
+                                </span>
+                            </div>
+                            
+                            <p className="text-gray-500 mb-4">
+                                Senast uppdaterad: {lastUpdated.toLocaleString('sv-SE')}
+                            </p>
+                            
+                            <button
+                                onClick={loadSeniorView}
+                                disabled={loading || updateStatus === 'offline'}
+                                className="senior-button bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50"
+                            >
+                                {loading ? '🔄 Uppdaterar...' : 
+                                 updateStatus === 'offline' ? '📴 Offline' :
+                                 '↻ Uppdatera Nu'}
+                            </button>
+                            
+                            {/* Auto-update info */}
+                            <p className="text-xs text-gray-400 mt-2">
+                                Uppdateras automatiskt var 30:e sekund
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the Senior Cockpit
+        ReactDOM.render(<SeniorCockpit />, document.getElementById('senior-cockpit-root'));
+    </script>
+</body>
+</html>

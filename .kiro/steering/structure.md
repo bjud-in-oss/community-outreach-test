@@ -6,6 +6,49 @@
 - **Strategisk komponentgruppering**: Organisera enligt komponentanalys (🟡🔵🔴)
 - **Senior-centrerad design**: Alla beslut filtreras genom senior-användarens perspektiv
 
+## 🎯 FILNAMNSYSTEM V2 (Självförbättrande)
+
+### **Format:** `[INDEX]_[EMOJI][STATUS]_[NAMN]_[DATUM]_[RELATIONER].md`
+
+### **Status System:**
+- **1🟢** = AKTIV (används aktivt nu)
+- **2🟡** = SKAPAS (under utveckling)  
+- **3🔵** = REFERENS (bakgrund & analys)
+- **4⚫** = ARKIV (historisk referens)
+
+### **Emoji Kategorier:**
+- **🎯** = Master Plan & Navigation | **📋** = Planering & Actions | **🤖** = Agent Configuration
+- **🎛️** = Senior Cockpit | **🧪** = Testing & Validation | **🌉** = Communication Bridge  
+- **⚙️** = Core Agent & Tools | **🎭** = Conscious Agent | **🔧** = Infrastructure & Setup
+- **🧠** = Memory & Context | **🏛️** = Church Technology | **🌍** = Translation Systems
+- **👨‍👩‍👧‍👦** = Family History | **📊** = Tools & Analysis | **🎨** = UI & Design
+- **💝** = Empathy & Senior | **👥** = User Analysis | **💡** = Concepts & Ideas
+- **📝** = Context & History | **🗑️** = Deprecated/Trash
+
+### **Index-Allokering:**
+```
+Core System (01-09):        Nästa = 007
+Implementation (050-099):   Nästa = 087 (efter 086_SYSTEMATIC_APPROACH_SUCCESS)
+Deep Dive (100-199):        Nästa = 114
+Technical (200-299):        Nästa = 243
+Archive (900-999):          Nästa = 967
+```
+
+### **Filskapning Workflow:**
+1. **Konsultera structure.md** - Hitta rätt serie och nästa lediga index
+2. **Använd file-creation-checklist.md** - Systematisk relation-analys
+3. **Följ filnamnsformat** - Använd korrekt emoji och sifferstatus
+4. **Uppdatera relationer** - Länka till relaterade dokument i filnamnet
+5. **Uppdatera structure.md** - Lägg till nya filen i rätt kategori
+
+**ANTI-AD-HOC:** Använd alltid `.kiro/steering/file-creation-checklist.md` för nya filer!
+
+### **Varför V2 Fungerar:**
+- **Siffror + emoji** = Tydligare än bara emoji
+- **Automatisk sortering** = Fas och prioritet synlig
+- **Självförbättrande** = Systemet analyserar och förbättrar sig själv
+- **Pragmatisk** = Fokus på funktion över perfektionism
+
 ## 🔗 LÄNKAD DOKUMENTARKITEKTUR (KRITISK FÖR OMSTARTER)
 **VIKTIGT**: Vi använder en länkad dokumentarkitektur istället för Single Source of Truth:
 
