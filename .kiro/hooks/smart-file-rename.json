@@ -1,0 +1,90 @@
+{
+  "name": "Smart File Rename",
+  "description": "Avancerad namnändring med automatisk referensuppdatering och V2-format validering",
+  "version": "1.0.0",
+  "trigger": {
+    "type": "manual",
+    "command": "smart-rename",
+    "shortcut": "Ctrl+Shift+R"
+  },
+  "inputs": [
+    {
+      "name": "currentFile",
+      "type": "file",
+      "description": "Fil som ska byta namn",
+      "required": true,
+      "default": "${activeFile}"
+    },
+    {
+      "name": "newName",
+      "type": "string",
+      "description": "Nytt namn (utan extension)",
+      "required": true,
+      "placeholder": "Ange nytt filnamn..."
+    },
+    {
+      "name": "updateIndex",
+      "type": "boolean",
+      "description": "Uppdatera index-allokering automatiskt",
+      "default": true
+    },
+    {
+      "name": "ignoreV2",
+      "type": "boolean", 
+      "description": "Ignorera V2-format validering",
+      "default": false
+    }
+  ],
+  "actions": [
+    {
+      "type": "script",
+      "script": "scripts/smart-file-rename.js",
+      "args": [
+        "${currentFile}",
+        "${newName}",
+        "${updateIndex ? '--update-index' : ''}",
+        "${ignoreV2 ? '--ignore-v2' : ''}"
+      ]
+    }
+  ],
+  "settings": {
+    "confirmBeforeExecution": true,
+    "showProgress": true,
+    "logResults": true,
+    "successMessage": "Smart rename slutförd! Uppdaterade ${result.updatedReferences} referenser.",
+    "errorHandling": "graceful"
+  },
+  "validation": {
+    "preExecution": [
+      {
+        "type": "fileExists",
+        "file": "${currentFile}",
+        "message": "Filen som ska byta namn existerar inte"
+      },
+      {
+        "type": "fileNotExists", 
+        "file": "${newName}",
+        "message": "En fil med det nya namnet existerar redan"
+      }
+    ],
+    "postExecution": [
+      {
+        "type": "fileExists",
+        "file": "${result.newPath}",
+        "message": "Namnändringen misslyckades - nya filen skapades inte"
+      }
+    ]
+  },
+  "integration": {
+    "fileCreationGuide": {
+      "followV2Format": true,
+      "updateIndexAllocation": true,
+      "validateEmojiStatus": true
+    },
+    "crossReferences": {
+      "scanAllMdFiles": true,
+      "updateAutomatically": true,
+      "backupBeforeUpdate": false
+    }
+  }
+}

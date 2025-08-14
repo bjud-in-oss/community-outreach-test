@@ -89,7 +89,7 @@ Including Steering Documents
 jules-reference.md
 
 
-product.md
+product-processes.md
 
 
 structure.md

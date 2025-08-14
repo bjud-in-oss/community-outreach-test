@@ -49,7 +49,7 @@ community-outreach/
 - ✅ **Environment Template**: .env.example med alla nödvändiga variabler
 
 ### 4. **Alla Styrdokument Uppdaterade**
-- ✅ **product.md**: Banbrytande produktvision med dubbelt medvetandesystem
+- ✅ **product-processes.md**: Banbrytande produktvision med dubbelt medvetandesystem
 - ✅ **structure.md**: Strategisk projektstruktur med komponentgruppering
 - ✅ **tech.md**: Komplett teknisk stack med fasbaserad implementation
 - ✅ **AGENTS.md**: Jules integration guide med Master Plan 2.0 arkitektur

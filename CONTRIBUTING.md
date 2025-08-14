@@ -29,7 +29,7 @@ Detta projekt är designat för **Kiro IDE** med:
 
 ### Steering System
 AI-guidance finns i `.kiro/steering/`:
-- `product.md` - Produktvision och senior-fokus
+- `product-processes.md` - Produktvision och senior-fokus
 - `structure.md` - Projektstruktur och arkitektur
 - `tech.md` - Teknisk stack och verktyg
 - `document-index.md` - Master dokumentindex

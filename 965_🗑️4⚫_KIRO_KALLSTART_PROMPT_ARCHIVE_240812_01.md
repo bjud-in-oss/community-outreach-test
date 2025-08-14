@@ -65,7 +65,7 @@ Fortsätt med selektiv import enligt 008_🔄🟢_STRATEGIC_CLEAN_START_PLAN:
 - **Master Plan**: *01_🎯🟢_MASTER_INTEGRATION_PLAN_240809_ALL.md
 - **Document Index**: .kiro/steering/document-index.md (strömlinjeformad)
 - **Research**: docs/research/ (fylld med RAW dokumentation)
-- **Steering**: .kiro/steering/ (product.md, tech.md, structure.md)
+- **Steering**: .kiro/steering/ (product-processes.md, tech.md, structure.md)
 
 ## 🚨 **KRITISKA REGLER:**
 

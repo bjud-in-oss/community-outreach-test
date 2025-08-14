@@ -23,6 +23,41 @@
 | **Jules Integration** | custom | 🔴 Kontrollerat LangChain-verktyg med timeout-logik |
 | **Smolagents** | ^0.3.0 | 🔴 Alternativ kodgenerator för enklare uppgifter |
 
+## 📚 UTVECKLINGSVERKTYG & DOKUMENTATION
+
+### **Kiro IDE Integration:**
+- **Specs System**: Strukturerad feature-utveckling med requirements/design/tasks
+- **Agent Hooks**: Automatiserade workflows för filvalidering och kvalitetskontroll
+- **MCP Integration**: Model Context Protocol för externa verktyg
+- **Steering Documents**: AI-guidance för konsekvent utveckling
+
+### **Jules Specialist Tool:**
+- **Komplett dokumentation**: `docs/research/specialist-tool/jules-complete-documentation.md`
+- **Automatiserad kodgenerering**: LangChain-baserad implementation
+- **GitHub integration**: Automatiska PR:er och merge-hantering
+- **Timeout-logik**: Säker hantering av långvariga operationer
+
+### **RAW Documentation Import System:**
+- **docs/research/development-tools/kiro-complete-documentation.md** - Komplett Kiro dokumentation (manuellt importerad 11 aug 2025)
+- **docs/research/specialist-tool/jules-complete-documentation.md** - Komplett Jules dokumentation (manuellt importerad 11 aug 2025)
+- **docs/research/llm-provider/groq-api-reference.md** - RAW Groq API referens (MCP fetch 11 aug 2025)
+- **Andra RAW imports** - Markerade med importdatum och källa för att undvika förvirring med träningsdata
+
+### **📚 RESEARCH DOCUMENTATION REFERENCE**
+```
+docs/research/ innehåller djup teknisk dokumentation:
+├── development-tools/  # Kiro IDE komplett dokumentation
+├── specialist-tool/    # Jules, Smolagents research
+├── agent-framework/    # LangChain, LlamaIndex guides
+├── infrastructure/     # Vercel, Supabase setup
+├── memory-framework/   # RAG och minnesystem implementation
+├── ui-framework/       # MCP-UI, senior design
+└── llm-provider/       # Groq, Gemini API:er
+
+Använd: #docs/research/[kategori] för att ladda specifik dokumentation
+Exempel: #docs/research/specialist-tool för Jules dokumentation
+```
+
 ### 🔵 Infrastruktur & Hosting
 **Syfte**: Robust, skalbar och gratis hosting-lösning
 

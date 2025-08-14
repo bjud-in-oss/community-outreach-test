@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "V2 Format Validation",
+  "description": "Naming validation and auto fix",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["*.md"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A .md file has been edited. If it's in the root directory and not README.md, AGENTS.md, LICENSE, or CONTRIBUTING.md, then verify and fix V2 format compliance:\n\nnode scripts/verify-and-fix-v2.js --auto-fix --verbose\n\nOnly run this for documentation files that should follow V2 naming convention."
+  }
+}

@@ -48,7 +48,7 @@
 #### **2. Nya Komponenter:**
 ```typescript
 ✅ setup-documentation-system.js - Automatisk dokumentationsladdare
-✅ Uppdaterade Steering Documents - product.md, structure.md, tech.md
+✅ Uppdaterade Steering Documents - product-processes.md, structure.md, tech.md
 ✅ MCP Server Integration - Context7, Fetch, Filesystem, Memory
 ✅ Environment Setup - .env.example med alla nödvändiga variabler
 ```
