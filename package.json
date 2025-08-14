@@ -28,7 +28,17 @@
     "monitor": "node src/infrastructure/monitoring/monitor.js",
     "health-check": "curl http://localhost:3000/api/health",
     "test:bridge": "node --loader ts-node/esm src/communication-bridge/run-tests.ts",
-    "test:bridge-integration": "node --loader ts-node/esm src/communication-bridge/test-bridge-integration.ts"
+    "test:bridge-integration": "node --loader ts-node/esm src/communication-bridge/test-bridge-integration.ts",
+    "test:senior-cockpit": "node --loader ts-node/esm src/conscious-agent/senior-cockpit/run-all-tests.ts",
+    "test:senior-security": "node --loader ts-node/esm src/conscious-agent/senior-cockpit/test-senior-security.ts",
+    "test:jules-tool": "node --loader ts-node/esm src/core-agent/tools/jules-tool/test-integration.ts",
+    "test:all": "npm run test:bridge && npm run test:senior-cockpit && npm run test:jules-tool",
+    "pre-deploy-check": "npm run type-check && npm run test:senior-security && npm run lint",
+    "demo:hello-world": "node --loader ts-node/esm src/conscious-agent/senior-cockpit/integration/FinalIntegrationTest.ts",
+    "deploy:staging": "vercel deploy --target staging",
+    "deploy:prod": "vercel deploy --prod",
+    "post-deploy-test": "npm run test:senior-security && npm run demo:hello-world",
+    "serve": "node serve-local.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.8.0",

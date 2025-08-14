@@ -163,8 +163,6 @@ async function testJulesToolIntegration() {
 }
 
 // Run the test
-if (import.meta.url === `file://${process.argv[1]}`) {
-  testJulesToolIntegration().catch(console.error);
-}
+testJulesToolIntegration().catch(console.error);
 
 export { testJulesToolIntegration };

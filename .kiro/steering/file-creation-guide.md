@@ -56,21 +56,38 @@
 ## 🔧 AUTOMATION SCRIPTS
 
 ### **Tillgängliga Verktyg:**
-- `scripts/verify-and-fix-v2.js` - **REKOMMENDERAT** - Validering med smart auto-fix
-- `scripts/smart-file-rename.js` - Intelligent namnändring med referensuppdatering
-- `scripts/batch-filename-correction.js` - Batch-korrigering av alla filer
+- `scripts/auto-v2-check.js` - **AUTOMATISK** - Körs av V2 Format Validator hook
+- `scripts/verify-and-fix-v2.js` - **REKOMMENDERAT** - Manuell validering med smart auto-fix
+- `scripts/smart-file-rename.js` - Intelligent namnändring med referensuppdatering (hook tillgänglig)
+- `scripts/check-senior-language.js` - **AUTOMATISK** - Körs av Senior Language Guard hook
+- `scripts/security-scan.js` - **AUTOMATISK** - Körs av Security Scanner hook
 - `scripts/verify-v2-format.js` - Enkel verifiering av format-compliance
 
 ### **Rekommenderat Workflow:**
 ```bash
-# 1. Validera och fixa automatiskt
-node scripts/verify-and-fix-v2.js --auto-fix
+# 1. AUTOMATISKT - Kiro agent hooks kör automatiskt vid filsparning
+{
+  "enabled": true,
+  "name": "V2 Format Validation",
+  "description": "Naming validation and auto fix",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["*.md"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A .md file has been edited. If it's in the root directory and not README.md, AGENTS.md, LICENSE, or CONTRIBUTING.md, then verify and fix V2 format compliance:\n\nnode scripts/verify-and-fix-v2.js --auto-fix --verbose\n\nOnly run this for documentation files that should follow V2 naming convention."
+  }
+}
 
-# 2. För manuell namnändring av specifika filer
-node scripts/smart-file-rename.js [gammal-fil] [nytt-namn]
+# 2. MANUELLT - För batch-operationer eller specifika behov:
+node scripts/verify-and-fix-v2.js --auto-fix    # Batch V2 fix
+node scripts/smart-file-rename.js [gammal-fil] [nytt-namn]  # Intelligent rename
 
-# 3. För enkel validering utan ändringar
-node scripts/verify-and-fix-v2.js
+# 3. MANUELLA HOOKS - Tillgängliga i Kiro Agent Hooks panel:
+# - Smart File Rename Hook
+# - V2 Format Validation Hook (manual trigger)
 ```
 
 ## 📁 INDEX-ALLOKERING FÖR NYA FILER
@@ -102,25 +119,33 @@ MASTER_INTEGRATION_PLAN.md (NAV/HUB)
 └── .kiro/steering/ (Denna mapp - Överlevnad efter omstart)
 ```
 
-## 🛡️ AUTOMATISKA KONTROLLER
+## 🛡️ AUTOMATISKA KONTROLLER (KIRO AGENT HOOKS)
 
-### **Format Validation:**
-- **Trigger**: När .md filer sparas
-- **Action**: Kör format validation
-- **Fallback**: Automatisk korrigering om möjligt
+### **Aktiva Agent Hooks i Kiro:**
 
-### **Pre-commit Hooks:**
-```bash
-#!/bin/bash
-# Format validation
-node scripts/verify-v2-format.js --quiet || exit 1
+#### **1. V2 Format Validator** ✅
+- **Trigger**: När .md filer sparas (exkluderar README.md, CONTRIBUTING.md, AGENTS.md)
+- **Script**: `scripts/auto-v2-check.js`
+- **Action**: Automatisk V2 format validering och korrigering
+- **Status**: Aktiverad med auto-approve
 
-# Senior-friendly language check
-node scripts/check-senior-language.js --quiet || exit 1
+#### **2. Senior Language Guard** ✅
+- **Trigger**: När kod-filer sparas (src/**/*.{tsx,jsx,ts,js})
+- **Script**: `scripts/check-senior-language.js`
+- **Action**: Kontrollerar teknisk jargong och föreslår senior-vänliga alternativ
+- **Status**: Aktiverad, kräver godkännande
 
-# Secrets scanning
-git diff --cached --name-only | xargs grep -l "ghp_\|sk-\|pk_" && exit 1
-```
+#### **3. Security Scanner** ✅
+- **Trigger**: När filer sparas (js,ts,json,md,env)
+- **Script**: `scripts/security-scan.js`
+- **Action**: Skannar efter hårdkodade secrets och säkerhetsproblem
+- **Status**: Aktiverad, kräver godkännande
+
+#### **4. Smart File Rename Hook** ✅
+- **Trigger**: Manuell
+- **Script**: `scripts/smart-file-rename.js`
+- **Action**: Intelligent filnamnändring med referensuppdatering
+- **Status**: Manuell hook för specifika namnändringar
 
 ## 🚀 ANTI-AD-HOC SAFEGUARDS
 

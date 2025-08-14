@@ -70,7 +70,8 @@ export class CommunicationBridgeIntegrationTest {
    * MASTER PLAN 2.0: Run all integration tests
    */
   async runAllTests(): Promise<TestSummary> {
-    console.log('🚀 Starting Communication Bridge Integration Tests...');\n    
+    console.log('🚀 Starting Communication Bridge Integration Tests...');
+    
     const startTime = Date.now();
     
     try {
@@ -98,7 +99,8 @@ export class CommunicationBridgeIntegrationTest {
       const endTime = Date.now();
       const summary = this.generateTestSummary(endTime - startTime);
       
-      console.log('✅ All Communication Bridge tests completed!');\n      this.printTestSummary(summary);
+      console.log('✅ All Communication Bridge tests completed!');
+      this.printTestSummary(summary);
       
       return summary;
       
@@ -358,7 +360,8 @@ export class CommunicationBridgeIntegrationTest {
       const verifications: TestVerification[] = [];
       
       for (const testCase of testCases) {
-        console.log(`   📝 Testing: "${testCase.seniorText}"`);\n        
+        console.log(`   📝 Testing: "${testCase.seniorText}"`);
+        
         const seniorRequest = {
           id: `test-translation-${Date.now()}`,
           timestamp: new Date(),

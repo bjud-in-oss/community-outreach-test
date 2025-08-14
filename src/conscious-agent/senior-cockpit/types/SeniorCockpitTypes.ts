@@ -235,3 +235,21 @@ export interface UserPlanValidation {
     message: string;
   }[];
 }
+
+// Additional types needed by ProgressAggregator
+export interface WeeklyDigest {
+  weekOf: string;
+  accomplishments: string[];
+  nextWeekFocus: string[];
+  encouragingMessage: string;
+  overallProgress: number;
+}
+
+export interface ProgressSummary {
+  period: 'week' | 'month';
+  startDate: string;
+  endDate: string;
+  majorAccomplishments: string[];
+  upcomingMilestones: string[];
+  celebrationMessage: string;
+}
