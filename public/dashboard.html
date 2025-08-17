@@ -117,7 +117,7 @@
             const loadTasks = async () => {
                 try {
                     setLoading(true);
-                    const response = await fetch('/api/status');
+                    const response = await fetch('http://localhost:3001/api/status');
                     
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -149,7 +149,7 @@
 
             const handleApprove = async (taskId) => {
                 try {
-                    const response = await fetch(`/api/tasks/${taskId}/approve`, {
+                    const response = await fetch(`http://localhost:3001/api/tasks/${taskId}/approve`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -174,7 +174,7 @@
 
             const handleReject = async (taskId) => {
                 try {
-                    const response = await fetch(`/api/tasks/${taskId}/reject`, {
+                    const response = await fetch(`http://localhost:3001/api/tasks/${taskId}/reject`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' }
                     });

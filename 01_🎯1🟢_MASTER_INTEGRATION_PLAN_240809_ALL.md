@@ -278,9 +278,38 @@ interface CommunicationBridge {
 
 ---
 
-## 🚀 **IMPLEMENTATION STRATEGY (SLUTGILTIG)**
+## 🚀 **IMPLEMENTATION STRATEGY (UPPDATERAD MED FAS-BASERAT FILSYSTEM)**
 
-### **🎯 Fas 1: Core DIY Platform MED SENIOR COCKPIT (Vecka 1-4)**
+### **📁 Fas 0: Repository & Filsystem Setup (Vecka 1)**
+**Referens:** [114_🏗️1🟢_UPPDATERAD_MAPPSTRUKTUR_ANALYS_250814_113.md](114_🏗️1🟢_UPPDATERAD_MAPPSTRUKTUR_ANALYS_250814_113.md)
+
+```typescript
+const fas0Setup = {
+  goal: "Fas-baserad repository struktur + EARS-system + Jules integration",
+  filsystem: {
+    medvetenAgent: "Senior-synlig struktur med projekt/planer/framsteg",
+    omedvetenAgent: "Teknisk struktur med fas-baserade specs och hierarkiska tasks",
+    earsSystem: "Översättningslager mellan medveten/omedveten",
+    communicationBridge: "Säker kommunikation och guardrails"
+  },
+  nyckelfunktioner: [
+    "Fas-integrerad dokumentation (CRAWL→WALK→RUN→FLY)",
+    "Hierarkiska tasks med egen requirements/design/tasks struktur",
+    "Jules-delegering med asynkron progress-rapportering", 
+    "Onboarding-integration (tekniskt men senior-vänligt)",
+    "EARS-driven automatisk task-uppdelning"
+  ],
+  framgångskriterier: [
+    "Repository struktur skapad enligt fas-baserat system",
+    "EARS kan generera hierarkiska tasks automatiskt",
+    "Jules kan delegeras subtasks asynkront",
+    "Onboarding-system fungerar senior-vänligt",
+    "Communication bridge filtrerar teknisk information"
+  ]
+};
+```
+
+### **🎯 Fas 1: Core DIY Platform MED SENIOR COCKPIT (Vecka 2-5)**
 ```typescript
 const corePlatform = {
   goal: "Senior Cockpit MVP + Grundläggande DIY-plattform",

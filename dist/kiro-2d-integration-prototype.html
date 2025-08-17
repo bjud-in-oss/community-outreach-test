@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏗️ Kiro 2D-Integration - Navigation + Dokument + Chat</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+            font-size: 16px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .workspace-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Position Indicator */
+        .position-indicator {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Main 3-Panel Layout */
+        .main-panels {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        /* Panel Styling */
+        .panel {
+            background: white;
+            border-right: 2px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel:last-child {
+            border-right: none;
+        }
+
+        .panel-header {
+            background: #f0f8ff;
+            padding: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 1.1em;
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Navigation Panel (Vänster) */
+        .navigation-panel {
+            background: #f8f9fa;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .phase-list, .clarity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .phase-item, .clarity-item {
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid #ddd;
+        }
+
+        .phase-item:hover, .clarity-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .phase-item.active {
+            border-left-color: #2196f3;
+            background: #e3f2fd;
+            font-weight: bold;
+        }
+
+        .clarity-item.active {
+            border-left-color: #4caf50;
+            background: #e8f5e8;
+            font-weight: bold;
+        }
+
+        .spec-list {
+            margin-top: 15px;
+            padding-left: 15px;
+        }
+
+        .spec-item {
+            padding: 8px 12px;
+            margin-bottom: 3px;
+            background: #f0f8ff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .spec-item:hover {
+            background: #e3f2fd;
+        }
+
+        .spec-item.active {
+            background: #2196f3;
+            color: white;
+        }
+
+        /* Document Panel (Mitten) */
+        .document-panel {
+            background: white;
+        }
+
+        .document-content {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .document-title {
+            color: #1976d2;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .document-meta {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #1976d2;
+        }
+
+        .document-body {
+            white-space: pre-wrap;
+            color: #333;
+        }
+
+        /* Chat Panel (Höger) */
+        .chat-panel {
+            background: #f0f8ff;
+        }
+
+        .chat-messages {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-senior {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message-ai {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .message-system {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            font-style: italic;
+        }
+
+        .chat-sender {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #2196f3;
+        }
+
+        .chat-send {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            background: #1976d2;
+            transform: scale(1.05);
+        }
+
+        /* 2D Grid Visualization */
+        .grid-2d {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            background: #f0f8ff;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .grid-cell:hover {
+            background: #e3f2fd;
+            transform: scale(1.05);
+        }
+
+        .grid-cell.active {
+            background: #2196f3;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .grid-cell.has-content {
+            background: #e8f5e8;
+            border-color: #4caf50;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .main-panels {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-panels {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            
+            .panel {
+                border-right: none;
+                border-bottom: 2px solid #e0e0e0;
+            }
+            
+            .navigation-panel .panel-content {
+                max-height: 200px;
+            }
+            
+            .chat-panel .panel-content {
+                max-height: 250px;
+            }
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-vague { background: #f44336; }
+        .status-approximate { background: #ff9800; }
+        .status-clear { background: #2196f3; }
+        .status-crystal { background: #4caf50; }
+    </style>
+</head>
+<body>
+    <div class="workspace-container">
+        <!-- Position Indicator -->
+        <div class="position-indicator">
+            🏗️ Fas 0 → Church Translation → Vagt (1.1) - Automatisk dokumentgenerering från chat
+        </div>
+
+        <!-- Main 3-Panel Layout -->
+        <div class="main-panels">
+            <!-- Navigation Panel (Vänster) -->
+            <div class="panel navigation-panel">
+                <div class="panel-header">
+                    🗺️ 2D Navigation
+                </div>
+                <div class="panel-content">
+                    <!-- Tid-Axel (Faser) -->
+                    <div class="nav-section">
+                        <h4>⏰ Tid-Axel (Faser)</h4>
+                        <ul class="phase-list">
+                            <li class="phase-item active" onclick="selectPhase(0)">
+                                Fas 0 - Crawl
+                                <div class="spec-list">
+                                    <div class="spec-item active" onclick="selectSpec('church-translation')">Church Translation</div>
+                                    <div class="spec-item" onclick="selectSpec('jules-integration')">Jules Integration</div>
+                                    <div class="spec-item" onclick="selectSpec('senior-cockpit')">Senior Cockpit</div>
+                                </div>
+                            </li>
+                            <li class="phase-item" onclick="selectPhase(1)">
+                                Fas 1 - Walk
+                                <div class="spec-list">
+                                    <div class="spec-item" onclick="selectSpec('empathy-engine')">Empathy Engine</div>
+                                    <div class="spec-item" onclick="selectSpec('collaboration')">Collaboration</div>
+                                </div>
+                            </li>
+                            <li class="phase-item" onclick="selectPhase(2)">Fas 2 - Run</li>
+                            <li class="phase-item" onclick="selectPhase(3)">Fas 3 - Fly</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tydlighets-Axel -->
+                    <div class="nav-section">
+                        <h4>🔍 Tydlighet-Axel</h4>
+                        <ul class="clarity-list">
+                            <li class="clarity-item active" onclick="selectClarity(1)">
+                                <span class="status-indicator status-vague"></span>
+                                1. Vagt (Ideas)
+                            </li>
+                            <li class="clarity-item" onclick="selectClarity(2)">
+                                <span class="status-indicator status-approximate"></span>
+                                2. Ungefär (Requirements)
+                            </li>
+                            <li class="clarity-item" onclick="selectClarity(3)">
+                                <span class="status-indicator status-clear"></span>
+                                3. Tydligt (Design)
+                            </li>
+                            <li class="clarity-item" onclick="selectClarity(4)">
+                                <span class="status-indicator status-crystal"></span>
+                                4. Kristallklart (Tasks)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 2D Grid Visualization -->
+                    <div class="nav-section">
+                        <h4>📊 2D Grid</h4>
+                        <div class="grid-2d">
+                            <div class="grid-cell active" onclick="selectGridCell(0,0)">0.1</div>
+                            <div class="grid-cell" onclick="selectGridCell(0,1)">0.2</div>
+                            <div class="grid-cell" onclick="selectGridCell(0,2)">0.3</div>
+                            <div class="grid-cell" onclick="selectGridCell(0,3)">0.4</div>
+                            <div class="grid-cell" onclick="selectGridCell(1,0)">1.1</div>
+                            <div class="grid-cell has-content" onclick="selectGridCell(1,1)">1.2</div>
+                            <div class="grid-cell" onclick="selectGridCell(1,2)">1.3</div>
+                            <div class="grid-cell" onclick="selectGridCell(1,3)">1.4</div>
+                            <div class="grid-cell" onclick="selectGridCell(2,0)">2.1</div>
+                            <div class="grid-cell" onclick="selectGridCell(2,1)">2.2</div>
+                            <div class="grid-cell" onclick="selectGridCell(2,2)">2.3</div>
+                            <div class="grid-cell" onclick="selectGridCell(2,3)">2.4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Panel (Mitten) -->
+            <div class="panel document-panel">
+                <div class="panel-header">
+                    📄 Aktuellt Dokument
+                </div>
+                <div class="panel-content">
+                    <div class="document-content">
+                        <div class="document-title">
+                            💡 Church Translation - Initial Vision
+                        </div>
+                        
+                        <div class="document-meta">
+                            📍 Position: Fas 0 → Church Translation → Vagt (1.1)
+                            📁 Fil: .kiro/specs/fas-0/church-translation/1-vagt/ideas/initial-vision.md
+                            🕒 Skapad: 2025-08-14 från chat-input
+                        </div>
+                        
+                        <div class="document-body"># Kyrktjänst Översättning - Initial Vision
+
+**Senior Input:** "Jag vill att kyrktjänsten ska översättas så alla förstår"
+
+## 🎯 Vad Senioren Vill:
+- Alla ska förstå kyrktjänsten
+- Språkbarriärer ska försvinna  
+- Inkluderande upplevelse för alla
+
+## 🤔 Frågor för Förtydligande:
+- Vilka språk behövs mest?
+- Live översättning eller förberedd text?
+- Teknisk lösning eller mänsklig översättare?
+- Budget och resurser?
+
+## 🚀 Möjliga Nästa Steg:
+1. Identifiera målspråk och behov
+2. Undersök tekniska lösningar (Google Translate API, DeepL)
+3. Planera implementation och test
+4. Skapa requirements-dokument
+
+## 💭 Automatiska Systemanteckningar:
+- Kategoriserad som: Fas 0 (Crawl) - Grundläggande funktionalitet
+- Tydlighetsnivå: Vagt (1) - Behöver mer specifik information
+- Relaterat till: Church Technology Analysis, Real-Time Translation
+- Föreslaget nästa dokument: Requirements (2-ungefar level)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Panel (Höger) -->
+            <div class="panel chat-panel">
+                <div class="panel-header">
+                    💬 Dynamisk Dialog
+                </div>
+                <div class="panel-content">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message message-senior">
+                            <div class="chat-sender">👵 Du</div>
+                            <div>Jag vill att kyrktjänsten ska översättas så alla förstår</div>
+                        </div>
+                        
+                        <div class="chat-message message-system">
+                            <div class="chat-sender">🤖 System</div>
+                            <div>Skapar dokument: .kiro/specs/fas-0/church-translation/1-vagt/ideas/initial-vision.md</div>
+                        </div>
+                        
+                        <div class="chat-message message-ai">
+                            <div class="chat-sender">🤖 AI-Assistenten</div>
+                            <div>Vilken bra idé! Jag har skapat ett dokument för din vision. För att göra planen tydligare - vilka språk tänker du att vi behöver mest? Svenska och engelska, eller finns det andra språk i er församling?</div>
+                        </div>
+                        
+                        <div class="chat-message message-senior">
+                            <div class="chat-sender">👵 Du</div>
+                            <div>Vi har många som pratar arabiska och somaliska också</div>
+                        </div>
+                        
+                        <div class="chat-message message-ai">
+                            <div class="chat-sender">🤖 AI-Assistenten</div>
+                            <div>Perfekt! Svenska, engelska, arabiska och somaliska. Tänker du dig live översättning under tjänsten, eller skulle det räcka med översatta texter som folk kan läsa?</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Berätta mer om din idé...">
+                        <button class="chat-send" onclick="sendMessage()">Skicka</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPhase = 0;
+        let currentClarity = 1;
+        let currentSpec = 'church-translation';
+
+        const documents = {
+            'fas-0': {
+                'church-translation': {
+                    1: {
+                        title: 'Church Translation - Initial Vision',
+                        file: '.kiro/specs/fas-0/church-translation/1-vagt/ideas/initial-vision.md',
+                        content: `# Kyrktjänst Översättning - Initial Vision
+
+**Senior Input:** "Jag vill att kyrktjänsten ska översättas så alla förstår"
+
+## 🎯 Vad Senioren Vill:
+- Alla ska förstå kyrktjänsten
+- Språkbarriärer ska försvinna  
+- Inkluderande upplevelse för alla
+
+## 🤔 Frågor för Förtydligande:
+- Vilka språk behövs mest?
+- Live översättning eller förberedd text?
+- Teknisk lösning eller mänsklig översättare?
+- Budget och resurser?
+
+## 🚀 Möjliga Nästa Steg:
+1. Identifiera målspråk och behov
+2. Undersök tekniska lösningar (Google Translate API, DeepL)
+3. Planera implementation och test
+4. Skapa requirements-dokument
+
+## 💭 Automatiska Systemanteckningar:
+- Kategoriserad som: Fas 0 (Crawl) - Grundläggande funktionalitet
+- Tydlighetsnivå: Vagt (1) - Behöver mer specifik information
+- Relaterat till: Church Technology Analysis, Real-Time Translation
+- Föreslaget nästa dokument: Requirements (2-ungefar level)`
+                    },
+                    2: {
+                        title: 'Church Translation - Requirements',
+                        file: '.kiro/specs/fas-0/church-translation/2-ungefar/requirements.md',
+                        content: `# Requirements Document - Church Translation
+
+## Introduction
+Skapa ett system för live-översättning av kyrktjänster till svenska, engelska, arabiska och somaliska.
+
+## Requirements
+
+### Requirement 1: Multi-Language Support
+**User Story:** Som församlingsmedlem vill jag höra kyrktjänsten på mitt modersmål så att jag kan förstå och delta fullt ut.
+
+#### Acceptance Criteria
+1. WHEN kyrktjänsten pågår THEN systemet SHALL erbjuda live-översättning till svenska, engelska, arabiska och somaliska
+2. WHEN användaren väljer språk THEN översättningen SHALL börja inom 2 sekunder
+3. WHEN pastorn talar THEN översättningen SHALL ha max 3 sekunders fördröjning
+
+### Requirement 2: Easy Access
+**User Story:** Som senior församlingsmedlem vill jag enkelt kunna välja mitt språk utan teknisk hjälp.
+
+#### Acceptance Criteria
+1. WHEN jag kommer till kyrkan THEN jag SHALL kunna välja språk med stora, tydliga knappar
+2. WHEN jag har valt språk THEN systemet SHALL komma ihåg mitt val till nästa gång
+3. WHEN jag behöver hjälp THEN det SHALL finnas personal som kan hjälpa mig`
+                    }
+                }
+            }
+        };
+
+        function selectPhase(phase) {
+            currentPhase = phase;
+            updateActiveStates();
+            updateDocument();
+        }
+
+        function selectClarity(clarity) {
+            currentClarity = clarity;
+            updateActiveStates();
+            updateDocument();
+        }
+
+        function selectSpec(spec) {
+            currentSpec = spec;
+            updateActiveStates();
+            updateDocument();
+        }
+
+        function selectGridCell(phase, clarity) {
+            currentPhase = phase;
+            currentClarity = clarity + 1;
+            updateActiveStates();
+            updateDocument();
+        }
+
+        function updateActiveStates() {
+            // Update phase items
+            document.querySelectorAll('.phase-item').forEach((item, index) => {
+                item.classList.toggle('active', index === currentPhase);
+            });
+
+            // Update clarity items
+            document.querySelectorAll('.clarity-item').forEach((item, index) => {
+                item.classList.toggle('active', index + 1 === currentClarity);
+            });
+
+            // Update spec items
+            document.querySelectorAll('.spec-item').forEach(item => {
+                const specName = item.textContent.toLowerCase().replace(/\s+/g, '-');
+                item.classList.toggle('active', specName.includes(currentSpec));
+            });
+
+            // Update grid cells
+            document.querySelectorAll('.grid-cell').forEach((cell, index) => {
+                const phase = Math.floor(index / 4);
+                const clarity = (index % 4) + 1;
+                cell.classList.toggle('active', phase === currentPhase && clarity === currentClarity);
+            });
+
+            // Update position indicator
+            const phases = ['Fas 0', 'Fas 1', 'Fas 2', 'Fas 3'];
+            const clarities = ['', 'Vagt', 'Ungefär', 'Tydligt', 'Kristallklart'];
+            const specs = {
+                'church-translation': 'Church Translation',
+                'jules-integration': 'Jules Integration',
+                'senior-cockpit': 'Senior Cockpit'
+            };
+            
+            document.querySelector('.position-indicator').textContent = 
+                `🏗️ ${phases[currentPhase]} → ${specs[currentSpec] || 'Unknown'} → ${clarities[currentClarity]} (${currentPhase}.${currentClarity}) - Automatisk dokumentgenerering från chat`;
+        }
+
+        function updateDocument() {
+            const doc = documents[`fas-${currentPhase}`]?.[currentSpec]?.[currentClarity];
+            
+            if (doc) {
+                document.querySelector('.document-title').textContent = `💡 ${doc.title}`;
+                document.querySelector('.document-meta').innerHTML = `
+                    📍 Position: Fas ${currentPhase} → ${currentSpec} → ${['', 'Vagt', 'Ungefär', 'Tydligt', 'Kristallklart'][currentClarity]} (${currentPhase}.${currentClarity})<br>
+                    📁 Fil: ${doc.file}<br>
+                    🕒 Skapad: 2025-08-14 från chat-input
+                `;
+                document.querySelector('.document-body').textContent = doc.content;
+            } else {
+                document.querySelector('.document-title').textContent = '📝 Nytt Dokument';
+                document.querySelector('.document-meta').innerHTML = `
+                    📍 Position: Fas ${currentPhase} → ${currentSpec} → ${['', 'Vagt', 'Ungefär', 'Tydligt', 'Kristallklart'][currentClarity]} (${currentPhase}.${currentClarity})<br>
+                    📁 Fil: .kiro/specs/fas-${currentPhase}/${currentSpec}/${currentClarity}-${['', 'vagt', 'ungefar', 'tydligt', 'kristallklart'][currentClarity]}/new-document.md<br>
+                    🕒 Redo att skapas från chat-input
+                `;
+                document.querySelector('.document-body').textContent = 'Detta dokument finns inte än. Chatta för att skapa det automatiskt!';
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                addChatMessage('senior', '👵 Du', message);
+                
+                // Simulate AI response and document creation
+                setTimeout(() => {
+                    addChatMessage('system', '🤖 System', `Analyserar input och skapar dokument på position ${currentPhase}.${currentClarity}...`);
+                    
+                    setTimeout(() => {
+                        const responses = [
+                            'Intressant! Jag har uppdaterat dokumentet med din information. Vill du berätta mer?',
+                            'Bra tillägg! Det hjälper mig förstå vad du behöver. Finns det något annat viktigt?',
+                            'Perfekt! Jag ser att vi rör oss mot en tydligare plan. Ska vi gå vidare till nästa steg?'
+                        ];
+                        const response = responses[Math.floor(Math.random() * responses.length)];
+                        addChatMessage('ai', '🤖 AI-Assistenten', response);
+                    }, 1000);
+                }, 500);
+                
+                input.value = '';
+            }
+        }
+
+        function addChatMessage(type, sender, message) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message message-${type}`;
+            messageDiv.innerHTML = `
+                <div class="chat-sender">${sender}</div>
+                <div>${message}</div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Enter key support for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Initialize
+        updateActiveStates();
+        updateDocument();
+
+        console.log('🏗️ Kiro 2D-Integration Prototype laddad!');
+        console.log('🎯 Testa navigation och chat-to-document funktionalitet');
+    </script>
+</body>
+</html>

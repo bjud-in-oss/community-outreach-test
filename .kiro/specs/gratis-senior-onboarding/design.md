@@ -4,6 +4,8 @@
 
 The Gratis Senior Onboarding system solves the critical "cold start" problem by providing a zero-installation web-based entry point that gradually enhances capabilities. The design prioritizes family relationships as the primary support mechanism and uses progressive enhancement to move from simple web-based guidance to full browser automation.
 
+**KRITISK INSIKT:** Onboarding är den enda tekniska aspekten som inte kan vara helt dold från seniorer. Men samma onboarding-system kan återanvändas för alla tekniska val, vilket gör det till en investering som lönar sig över tid.
+
 ## Architecture
 
 ### Progressive Enhancement Phases

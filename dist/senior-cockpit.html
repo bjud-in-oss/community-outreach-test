@@ -160,7 +160,7 @@
                     setUpdateStatus('updating');
                     
                     // Call real API endpoint
-                    const response = await fetch('/api/senior-view');
+                    const response = await fetch('http://localhost:3001/api/senior-view');
                     
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);

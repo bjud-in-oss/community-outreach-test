@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👥 Multi-Person Chat Demo - EARS + Vänner</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 16px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .workspace-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Position Indicator */
+        .position-indicator {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Main 2-Panel Layout */
+        .main-panels {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        /* Panel Styling */
+        .panel {
+            background: white;
+            border-right: 3px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel:last-child {
+            border-right: none;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-bottom: 3px solid #e0e0e0;
+            font-weight: bold;
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        /* Rich Views Panel (Vänster) */
+        .views-panel {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .view-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .view-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .view-section h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Project Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            color: white;
+            margin-left: -15px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+        }
+
+        .timeline-item.completed::before {
+            background: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .timeline-item.active::before {
+            background: #ff9800;
+            border-color: #ff9800;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        /* Team Members */
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .member-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+
+        .member-status.away {
+            background: #ff9800;
+        }
+
+        .member-status.busy {
+            background: #f44336;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin: 15px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Chat Panel (Höger) */
+        .chat-panel {
+            background: #ffffff;
+        }
+
+        .chat-panel .panel-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* Participant Selector */
+        .participant-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            flex-wrap: wrap;
+        }
+
+        .participant-chip {
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .participant-chip:hover {
+            transform: scale(1.05);
+        }
+
+        .participant-chip.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .chat-messages {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .chat-message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+            max-width: 85%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .message-senior {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message-friend {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c3e50;
+            margin-right: auto;
+        }
+
+        .message-ai-advisor {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            margin-right: auto;
+        }
+
+        .message-ai-solver {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            margin-right: auto;
+        }
+
+        .message-system {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8b4513;
+            text-align: center;
+            margin: 10px auto;
+            max-width: 95%;
+            font-style: italic;
+        }
+
+        .chat-sender {
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sender-role {
+            font-size: 0.8em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* Chat Input with Addressing */
+        .chat-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .addressing-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .address-to {
+            font-weight: bold;
+        }
+
+        .quick-address {
+            padding: 4px 8px;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-address:hover {
+            background: #2196f3;
+            color: white;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1.1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+        }
+
+        .chat-send {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .main-panels {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+            
+            .panel {
+                border-right: none;
+                border-bottom: 3px solid #e0e0e0;
+            }
+            
+            .chat-messages {
+                height: 300px;
+            }
+            
+            .view-section {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .participant-selector {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .team-members {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="workspace-container">
+        <!-- Position Indicator -->
+        <div class="position-indicator">
+            👥 Multi-Person Chat Demo - EARS + Vänner + Två AI-Personligheter
+        </div>
+
+        <!-- Main 2-Panel Layout -->
+        <div class="main-panels">
+            <!-- Rich Views Panel (Vänster) -->
+            <div class="panel views-panel">
+                <div class="panel-header">
+                    📊 Rika Vyer & Projektöversikt
+                </div>
+                <div class="panel-content">
+                    <div class="view-section">
+                        <h3>🎯 Projektmål</h3>
+                        <p><strong>Kyrktjänst Översättning:</strong> En app som översätter kyrktjänsten live så alla förstår, oavsett vilket språk de pratar</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Övergripande Framsteg</span>
+                                <span>68%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="view-section">
+                        <h3>👥 Projektteam</h3>
+                        <div class="team-members">
+                            <div class="team-member">
+                                <div class="member-status"></div>
+                                <span>👵 Astrid (Du)</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-status"></div>
+                                <span>👨 Gunnar</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-status busy"></div>
+                                <span>🤖 Jules (Arbetar)</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-status"></div>
+                                <span>🎭 AI-Rådgivare</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-status"></div>
+                                <span>🔧 AI-Problemlösare</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="view-section">
+                        <h3>📅 Projekttidslinje</h3>
+                        <div class="timeline">
+                            <div class="timeline-item completed">
+                                <strong>Vecka 1:</strong> Grundsystem klart<br>
+                                <small>Jules slutförde grundläggande översättning</small>
+                            </div>
+                            <div class="timeline-item active">
+                                <strong>Vecka 2:</strong> Språkstöd (Pågår)<br>
+                                <small>Arabiska och somaliska - 75% klart</small>
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Vecka 3:</strong> Gränssnitt<br>
+                                <small>Behöver input från Astrid och Gunnar</small>
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Vecka 4:</strong> Test och lansering<br>
+                                <small>Testa med riktiga kyrktjänster</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="view-section">
+                        <h3>📊 Detaljerad Framsteg</h3>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Grundsystem</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Språkstöd</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Gränssnitt</span>
+                                <span>25%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Testing</span>
+                                <span>0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multi-Person Chat Panel (Höger) -->
+            <div class="panel chat-panel">
+                <div class="panel-header">
+                    💬 Multi-Person Chat (Naturlig Adressering)
+                </div>
+                <div class="panel-content">
+                    <div class="participant-selector">
+                        <div class="participant-chip active" onclick="toggleParticipant('all')">👥 Alla</div>
+                        <div class="participant-chip" onclick="toggleParticipant('gunnar')">👨 Gunnar</div>
+                        <div class="participant-chip" onclick="toggleParticipant('ai-advisor')">🎭 AI-Rådgivare</div>
+                        <div class="participant-chip" onclick="toggleParticipant('ai-solver')">🔧 AI-Problemlösare</div>
+                        <div class="participant-chip" onclick="toggleParticipant('jules')">🤖 Jules</div>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message message-senior">
+                            <div class="chat-sender">👵 Astrid <span class="sender-role">(Du)</span></div>
+                            <div>Hej alla! Jag vill att vi ska göra en app som översätter kyrktjänsten</div>
+                        </div>
+                        
+                        <div class="chat-message message-friend">
+                            <div class="chat-sender">👨 Gunnar <span class="sender-role">(Vän)</span></div>
+                            <div>Vilken bra idé Astrid! Vi har ju många i församlingen som pratar olika språk. Jag kan hjälpa till med tekniska saker.</div>
+                        </div>
+                        
+                        <div class="chat-message message-ai-advisor">
+                            <div class="chat-sender">🎭 AI-Rådgivare <span class="sender-role">(Bollplank)</span></div>
+                            <div>Det låter som ett fantastiskt projekt! Låt mig hjälpa er tänka igenom detta. Vilka språk tänker ni er? Och ska det vara live-översättning eller förberedd text?</div>
+                        </div>
+                        
+                        <div class="chat-message message-senior">
+                            <div class="chat-sender">👵 Astrid</div>
+                            <div>@AI-Rådgivare Vi behöver svenska, engelska, arabiska och somaliska. Helst live så alla kan följa med direkt.</div>
+                        </div>
+                        
+                        <div class="chat-message message-system">
+                            <div class="chat-sender">🧠 EARS-System</div>
+                            <div>Skapar teknisk specifikation baserat på konversationen: Live-översättning, 4 språk, kyrkmiljö...</div>
+                        </div>
+                        
+                        <div class="chat-message message-ai-solver">
+                            <div class="chat-sender">🔧 AI-Problemlösare <span class="sender-role">(Lösningsfokuserad)</span></div>
+                            <div>Perfekt! Jag ser en lösning: Google Cloud Speech-to-Text för svenska tal, DeepL för översättning, och en enkel webb-app. Kostnad cirka 40 kr/månad. Jules kan bygga detta!</div>
+                        </div>
+                        
+                        <div class="chat-message message-friend">
+                            <div class="chat-sender">👨 Gunnar</div>
+                            <div>@AI-Problemlösare Det låter rimligt! Kan vi testa det först innan vi bestämmer oss?</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="addressing-container">
+                            <span class="address-to">Skriv till:</span>
+                            <div class="quick-address" onclick="setAddress('alla')">👥 Alla</div>
+                            <div class="quick-address" onclick="setAddress('@Gunnar')">👨 Gunnar</div>
+                            <div class="quick-address" onclick="setAddress('@AI-Rådgivare')">🎭 Rådgivare</div>
+                            <div class="quick-address" onclick="setAddress('@AI-Problemlösare')">🔧 Problemlösare</div>
+                        </div>
+                        
+                        <div class="chat-input-row">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="Skriv ditt meddelande... (använd @namn för att adressera specifik person)">
+                            <button class="chat-send" onclick="sendMessage()">Skicka</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messageCount = 0;
+        let currentAddress = 'alla';
+        
+        const participants = {
+            'gunnar': { name: '👨 Gunnar', role: 'Vän', class: 'message-friend' },
+            'ai-advisor': { name: '🎭 AI-Rådgivare', role: 'Bollplank', class: 'message-ai-advisor' },
+            'ai-solver': { name: '🔧 AI-Problemlösare', role: 'Lösningsfokuserad', class: 'message-ai-solver' },
+            'jules': { name: '🤖 Jules', role: 'Arbetar asynkront', class: 'message-system' }
+        };
+
+        const responses = [
+            {
+                from: 'ai-advisor',
+                message: 'Bra fråga! Har ni tänkt på hur ljudkvaliteten är i kyrkan? Det kan påverka hur bra översättningen blir.'
+            },
+            {
+                from: 'gunnar', 
+                message: 'Jag kan kolla ljudsystemet i kyrkan. Vi har ganska bra mikrofoner redan.'
+            },
+            {
+                from: 'ai-solver',
+                message: 'Perfekt! Med bra mikrofoner blir Google Cloud Speech-to-Text mycket mer exakt. Jules kan börja med grundsystemet redan nu.'
+            },
+            {
+                from: 'jules',
+                message: 'Jules har startat arbetet med grundsystemet. Beräknad tid: 2-3 dagar för första version.'
+            }
+        ];
+
+        function toggleParticipant(participant) {
+            const chips = document.querySelectorAll('.participant-chip');
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (participant === 'all') {
+                currentAddress = 'alla';
+            } else {
+                currentAddress = `@${participants[participant].name}`;
+            }
+            
+            updateAddressDisplay();
+        }
+
+        function setAddress(address) {
+            currentAddress = address;
+            const input = document.getElementById('chatInput');
+            if (address !== 'alla' && !input.value.startsWith('@')) {
+                input.value = address + ' ' + input.value;
+            }
+            input.focus();
+        }
+
+        function updateAddressDisplay() {
+            const addressDisplay = document.querySelector('.address-to');
+            addressDisplay.textContent = `Skriv till: ${currentAddress}`;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                addChatMessage('senior', '👵 Astrid', message);
+                
+                // Simulate responses from other participants
+                setTimeout(() => {
+                    const response = responses[messageCount % responses.length];
+                    const participant = participants[response.from];
+                    
+                    if (participant) {
+                        addChatMessage(response.from, participant.name, response.message, participant.role);
+                    }
+                    
+                    // Update progress occasionally
+                    if (messageCount % 3 === 0) {
+                        updateProgress();
+                    }
+                    
+                    messageCount++;
+                }, 1000 + Math.random() * 2000);
+                
+                input.value = '';
+            }
+        }
+
+        function addChatMessage(type, sender, message, role = '') {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            
+            let className = 'chat-message ';
+            if (type === 'senior') {
+                className += 'message-senior';
+            } else if (participants[type]) {
+                className += participants[type].class;
+            } else {
+                className += 'message-system';
+            }
+            
+            messageDiv.className = className;
+            
+            const roleText = role ? `<span class="sender-role">(${role})</span>` : '';
+            messageDiv.innerHTML = `
+                <div class="chat-sender">${sender} ${roleText}</div>
+                <div>${message}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function updateProgress() {
+            // Simulate progress updates
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach((bar, index) => {
+                if (index === 1) { // Språkstöd
+                    const currentWidth = parseInt(bar.style.width) || 75;
+                    if (currentWidth < 90) {
+                        bar.style.width = (currentWidth + 5) + '%';
+                        bar.parentElement.previousElementSibling.querySelector('span:last-child').textContent = (currentWidth + 5) + '%';
+                    }
+                } else if (index === 2) { // Gränssnitt
+                    const currentWidth = parseInt(bar.style.width) || 25;
+                    if (currentWidth < 50) {
+                        bar.style.width = (currentWidth + 10) + '%';
+                        bar.parentElement.previousElementSibling.querySelector('span:last-child').textContent = (currentWidth + 10) + '%';
+                    }
+                }
+            });
+            
+            // Update overall progress
+            const overallProgress = document.querySelector('.progress-fill');
+            const currentWidth = parseInt(overallProgress.style.width) || 68;
+            if (currentWidth < 85) {
+                overallProgress.style.width = (currentWidth + 3) + '%';
+                overallProgress.parentElement.previousElementSibling.querySelector('span:last-child').textContent = (currentWidth + 3) + '%';
+            }
+        }
+
+        // Enter key support for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Auto-detect @mentions in input
+        document.getElementById('chatInput').addEventListener('input', function(e) {
+            const value = e.target.value;
+            if (value.includes('@')) {
+                // Could implement auto-complete here
+            }
+        });
+
+        console.log('👥 Multi-Person Chat Demo laddad!');
+        console.log('🎭 Två AI-personligheter: Rådgivare (bollplank) + Problemlösare (lösningsfokuserad)');
+        console.log('👥 Naturlig adressering: Skriv @namn eller använd snabbknappar');
+        console.log('📊 Rika vyer: Projektöversikt, team, tidslinje, detaljerad framsteg');
+    </script>
+</body>
+</html>

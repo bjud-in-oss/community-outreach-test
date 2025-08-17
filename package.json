@@ -38,7 +38,9 @@
     "deploy:staging": "vercel deploy --target staging",
     "deploy:prod": "vercel deploy --prod",
     "post-deploy-test": "npm run test:senior-security && npm run demo:hello-world",
-    "serve": "node serve-local.js"
+    "serve": "node serve-local.js",
+    "api": "node src/api/senior-api.js",
+    "dev:full": "concurrently \"npm run serve\" \"npm run api\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.8.0",
@@ -70,6 +72,7 @@
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^9.2.0",
     "eslint": "^8.56.0",
     "jest": "^29.7.0",
     "nodemon": "^3.0.0",

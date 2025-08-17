@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Fas-Medveten EARS Demo - Hierarkiska Tasks</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-size: 16px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .workspace-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Position Indicator */
+        .position-indicator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Main 2-Panel Layout */
+        .main-panels {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        /* Panel Styling */
+        .panel {
+            background: white;
+            border-right: 3px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel:last-child {
+            border-right: none;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-bottom: 3px solid #e0e0e0;
+            font-weight: bold;
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        /* Medveten Plan Panel (Vänster) */
+        .medveten-panel {
+            background: #f8f9fa;
+        }
+
+        .medveten-panel .panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .plan-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .plan-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .plan-section h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-section p, .plan-section li {
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        .plan-section ul {
+            padding-left: 20px;
+        }
+
+        /* Fas-Progression */
+        .fas-progression {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 25px;
+            color: white;
+        }
+
+        .fas-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .fas-icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .fas-item.active {
+            transform: scale(1.1);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Delegering Section */
+        .delegering-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-left-color: #4ecdc4;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+        }
+
+        .task-status {
+            font-size: 1.2em;
+        }
+
+        /* Onboarding Section */
+        .onboarding-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-left-color: #ff9a56;
+        }
+
+        .onboarding-step {
+            background: rgba(255,255,255,0.8);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #ff9a56;
+        }
+
+        /* Test Button */
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Chat Panel (Höger) */
+        .chat-panel {
+            background: #ffffff;
+        }
+
+        .chat-panel .panel-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .chat-messages {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            height: 450px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .chat-message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+            max-width: 85%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .message-senior {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message-ai {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            margin-right: auto;
+        }
+
+        .message-system {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            text-align: center;
+            margin: 10px auto;
+            max-width: 95%;
+            font-style: italic;
+        }
+
+        .message-ears {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8b4513;
+            text-align: center;
+            margin: 10px auto;
+            max-width: 95%;
+            font-weight: bold;
+        }
+
+        .chat-sender {
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hierarchical-tasks {
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4facfe;
+        }
+
+        .hierarchical-tasks h4 {
+            color: #4facfe;
+            margin-top: 0;
+        }
+
+        .subtask {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 6px;
+        }
+
+        .subtask-status {
+            font-size: 1.1em;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1.1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+        }
+
+        .chat-send {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        /* EARS Processing */
+        .ears-processing {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border: 2px solid #ff9a56;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #8b4513;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .main-panels {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+            
+            .panel {
+                border-right: none;
+                border-bottom: 3px solid #e0e0e0;
+            }
+            
+            .chat-messages {
+                height: 300px;
+            }
+            
+            .plan-section {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .fas-progression {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="workspace-container">
+        <!-- Position Indicator -->
+        <div class="position-indicator">
+            🧠 Fas-Medveten EARS Demo - Hierarkiska Tasks & Jules Delegering
+        </div>
+
+        <!-- Main 2-Panel Layout -->
+        <div class="main-panels">
+            <!-- Medveten Plan Panel (Vänster) -->
+            <div class="panel medveten-panel">
+                <div class="panel-header">
+                    🎭 Medveten Plan (Fas-Medveten)
+                </div>
+                <div class="panel-content">
+                    <div class="plan-section">
+                        <h3>📋 Vad Vi Bygger</h3>
+                        <p>"En app som översätter kyrktjänsten live så alla förstår, oavsett vilket språk de pratar"</p>
+                    </div>
+
+                    <div class="plan-section">
+                        <h3>🎯 Aktuell Fas: WALK (2/4)</h3>
+                        <div class="fas-progression">
+                            <div class="fas-item">
+                                <div class="fas-icon">✅</div>
+                                <div>CRAWL</div>
+                            </div>
+                            <div class="fas-item active">
+                                <div class="fas-icon">🔄</div>
+                                <div>WALK</div>
+                            </div>
+                            <div class="fas-item">
+                                <div class="fas-icon">⏳</div>
+                                <div>RUN</div>
+                            </div>
+                            <div class="fas-item">
+                                <div class="fas-icon">⏳</div>
+                                <div>FLY</div>
+                            </div>
+                        </div>
+                        <p><strong>WALK-fas:</strong> Bookmarklet för förbättrad funktionalitet på alla webbsidor</p>
+                    </div>
+
+                    <div class="plan-section onboarding-section">
+                        <h3>🔧 Onboarding (Tekniskt men Nödvändigt)</h3>
+                        <div class="onboarding-step">
+                            <strong>Steg 1:</strong> Dra den blå knappen till dina bokmärken
+                        </div>
+                        <div class="onboarding-step">
+                            <strong>Steg 2:</strong> Klicka på bokmärket när du behöver hjälp
+                        </div>
+                        <div class="onboarding-step">
+                            <strong>Hjälp:</strong> Ring Gunnar om något känns krångligt
+                        </div>
+                    </div>
+
+                    <div class="plan-section delegering-section">
+                        <h3>👥 Jules Arbetar På (Delegering)</h3>
+                        <div class="task-item">
+                            <span class="task-status">✅</span>
+                            <span>Grundsystem - Klar!</span>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-status">🔄</span>
+                            <span>Språkstöd - Pågår (75%)</span>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-status">⏳</span>
+                            <span>Gränssnitt - Väntar på din input</span>
+                        </div>
+                        <p><em>Jules arbetar asynkront - du kan gå iväg och komma tillbaka senare!</em></p>
+                    </div>
+
+                    <div class="plan-section">
+                        <h3>💰 Kostnad & Praktiskt</h3>
+                        <p><strong>Kostnad:</strong> Cirka 40 kr per månad</p>
+                        <p><strong>Installation:</strong> Enkel bookmarklet (dra & släpp)</p>
+                        <p><strong>Användning:</strong> Fungerar på alla webbsidor</p>
+                    </div>
+
+                    <button class="test-button" onclick="testCurrentPhase()">
+                        🎮 Testa WALK-Fas (Demo)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Panel (Höger) -->
+            <div class="panel chat-panel">
+                <div class="panel-header">
+                    💬 EARS-Driven Chat (Hierarkisk Task-Skapning)
+                </div>
+                <div class="panel-content">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message message-senior">
+                            <div class="chat-sender">👵 Du</div>
+                            <div>Jag vill att alla ska förstå vår kyrktjänst</div>
+                        </div>
+                        
+                        <div class="chat-message message-ears">
+                            <div class="chat-sender">🧠 EARS-System</div>
+                            <div>Analyserar din begäran och skapar hierarkiska tasks automatiskt...</div>
+                        </div>
+                        
+                        <div class="chat-message message-ai">
+                            <div class="chat-sender">🤖 AI-Assistenten</div>
+                            <div>Perfekt! Jag delar upp projektet i 3 huvuddelar som kan arbetas på parallellt:</div>
+                            <div class="hierarchical-tasks">
+                                <h4>📋 Hierarkiska Tasks:</h4>
+                                <div class="subtask">
+                                    <span class="subtask-status">🤖</span>
+                                    <span><strong>1. Grundsystem</strong> - Jules arbetar på detta</span>
+                                </div>
+                                <div class="subtask">
+                                    <span class="subtask-status">🤖</span>
+                                    <span><strong>2. Språkstöd</strong> - Jules arbetar på detta</span>
+                                </div>
+                                <div class="subtask">
+                                    <span class="subtask-status">👤</span>
+                                    <span><strong>3. Gränssnitt</strong> - Behöver din input</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-message message-senior">
+                            <div class="chat-sender">👵 Du</div>
+                            <div>Låter bra! Kan Jules verkligen arbeta själv?</div>
+                        </div>
+                        
+                        <div class="chat-message message-system">
+                            <div class="chat-sender">🤖 System</div>
+                            <div>Jules arbetar asynkront - du kan gå iväg och komma tillbaka när det är klart!</div>
+                        </div>
+                        
+                        <div class="chat-message message-ai">
+                            <div class="chat-sender">🤖 AI-Assistenten</div>
+                            <div>Ja! Jules är som en pålitlig kollega. Jag ger Jules tydliga instruktioner och Jules arbetar självständigt. Du får notifikationer när något är klart eller behöver din input.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ears-processing" id="earsProcessing" style="display: none;">
+                        🧠 EARS-Generering: Skapar hierarkiska tasks och delegerar till Jules...
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Fråga om projektet eller ge nya instruktioner...">
+                        <button class="chat-send" onclick="sendMessage()">Skicka</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messageCount = 0;
+        let currentPhase = 'WALK';
+        
+        const earsResponses = [
+            {
+                ears: "EARS-System: Uppdaterar fas-progression och delegerar nya subtasks till Jules",
+                ai: "Bra fråga! Jag har bett Jules fokusera på språkstödet först. Arabiska och somaliska kräver speciella teckenuppsättningar som Jules hanterar automatiskt.",
+                hierarchical: {
+                    "Språkstöd": {
+                        "Arabiska tecken": "Jules arbetar - 60%",
+                        "Somaliska tecken": "Jules arbetar - 40%", 
+                        "Riktning (höger-till-vänster)": "Jules planerar"
+                    }
+                }
+            },
+            {
+                ears: "EARS-System: Analyserar gränssnitt-krav och förbereder för senior-input",
+                ai: "Nu behöver jag din hjälp! För gränssnittet vill jag veta: Ska texten visas som undertexter längst ner, eller som en separat ruta bredvid?",
+                hierarchical: {
+                    "Gränssnitt": {
+                        "Textplacering": "Behöver din input",
+                        "Textstorlek": "Behöver din input",
+                        "Färgschema": "Behöver din input"
+                    }
+                }
+            },
+            {
+                ears: "EARS-System: Förbereder fas-övergång från WALK till RUN",
+                ai: "Fantastiskt! Jules har slutfört grundsystemet och språkstödet. Nu är vi redo att gå från WALK-fas (bookmarklet) till RUN-fas (browser extension) för ännu bättre funktionalitet!",
+                hierarchical: {
+                    "Fas-Övergång": {
+                        "WALK → RUN": "Redo att börja",
+                        "Browser Extension": "Jules förbereder",
+                        "Förbättrad funktionalitet": "Planeras"
+                    }
+                }
+            }
+        ];
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                addChatMessage('senior', '👵 Du', message);
+                
+                // Show EARS processing
+                showEARSProcessing();
+                
+                // Simulate EARS processing and response
+                setTimeout(() => {
+                    hideEARSProcessing();
+                    
+                    const response = earsResponses[messageCount % earsResponses.length];
+                    
+                    // Add EARS system message
+                    addChatMessage('ears', '🧠 EARS-System', response.ears);
+                    
+                    // Add AI response with hierarchical tasks
+                    setTimeout(() => {
+                        addAIMessageWithHierarchy(response.ai, response.hierarchical);
+                        updateMedvetenPlan();
+                        updateJulesDelegation();
+                    }, 1000);
+                    
+                    messageCount++;
+                }, 2000);
+                
+                input.value = '';
+            }
+        }
+
+        function addChatMessage(type, sender, message) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message message-${type}`;
+            messageDiv.innerHTML = `
+                <div class="chat-sender">${sender}</div>
+                <div>${message}</div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addAIMessageWithHierarchy(message, hierarchy) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message message-ai';
+            
+            let hierarchyHTML = '';
+            if (hierarchy) {
+                hierarchyHTML = '<div class="hierarchical-tasks"><h4>📋 Uppdaterade Tasks:</h4>';
+                for (const [category, tasks] of Object.entries(hierarchy)) {
+                    hierarchyHTML += `<div style="margin-bottom: 10px;"><strong>${category}:</strong></div>`;
+                    for (const [task, status] of Object.entries(tasks)) {
+                        const icon = status.includes('Jules') ? '🤖' : status.includes('input') ? '👤' : '📋';
+                        hierarchyHTML += `<div class="subtask"><span class="subtask-status">${icon}</span><span><strong>${task}:</strong> ${status}</span></div>`;
+                    }
+                }
+                hierarchyHTML += '</div>';
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="chat-sender">🤖 AI-Assistenten</div>
+                <div>${message}</div>
+                ${hierarchyHTML}
+            `;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showEARSProcessing() {
+            document.getElementById('earsProcessing').style.display = 'block';
+        }
+
+        function hideEARSProcessing() {
+            document.getElementById('earsProcessing').style.display = 'none';
+        }
+
+        function updateMedvetenPlan() {
+            // Simulate updating the medveten plan based on EARS processing
+            console.log('🎭 Medveten Plan uppdaterad med fas-medvetenhet och hierarkiska tasks');
+            
+            // Add visual feedback
+            const planSections = document.querySelectorAll('.plan-section');
+            planSections.forEach(section => {
+                section.style.animation = 'none';
+                section.offsetHeight; // Trigger reflow
+                section.style.animation = 'slideIn 0.5s ease';
+            });
+        }
+
+        function updateJulesDelegation() {
+            // Simulate updating Jules delegation status
+            const taskItems = document.querySelectorAll('.task-item');
+            taskItems.forEach(item => {
+                if (item.textContent.includes('Språkstöd')) {
+                    item.innerHTML = '<span class="task-status">🔄</span><span>Språkstöd - Pågår (85%)</span>';
+                }
+            });
+        }
+
+        function testCurrentPhase() {
+            alert(`🎮 ${currentPhase}-Fas Demo:\n\n"Hej och välkomna till kyrktjänsten"\n↓ Bookmarklet aktiveras automatiskt\n↓ "Hello and welcome to the church service"\n↓ "مرحبا ومرحبا بكم في خدمة الكنيسة"\n↓ "Soo dhaweynta adeegga kaniisadda"\n\nFungerar på alla webbsidor tack vare bookmarklet!`);
+        }
+
+        // Enter key support for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Simulate phase progression
+        function simulatePhaseProgression() {
+            const phases = ['CRAWL', 'WALK', 'RUN', 'FLY'];
+            const currentIndex = phases.indexOf(currentPhase);
+            
+            if (currentIndex < phases.length - 1) {
+                currentPhase = phases[currentIndex + 1];
+                updatePhaseDisplay();
+            }
+        }
+
+        function updatePhaseDisplay() {
+            const indicator = document.querySelector('.position-indicator');
+            indicator.textContent = `🧠 Fas-Medveten EARS Demo - Nu i ${currentPhase}-Fas`;
+        }
+
+        console.log('🧠 Fas-Medveten EARS Demo laddad!');
+        console.log('🎭 Medveten Agent: Fas-medveten plan med Jules-delegering');
+        console.log('⚙️ EARS-System: Hierarkisk task-skapning och fas-progression');
+        console.log('🤖 Jules Integration: Asynkron delegering av subtasks');
+        console.log('🔧 Onboarding: Tekniskt men senior-vänligt');
+    </script>
+</body>
+</html>
