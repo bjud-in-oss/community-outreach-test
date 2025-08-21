@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fokuserad Vy Demo</title>
+    <style>
+        :root {
+            --bar-height: 120px;
+            --button-height: 50px;
+            --input-height: 50px;
+            --gap: 10px;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-view {
+            flex: 1;
+            display: flex; /* Changed to flex */
+            overflow: hidden; /* Hide overflow at this level */
+            padding-bottom: var(--bar-height); 
+        }
+
+        .view-pane {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bar-height);
+            background-color: #ffffff;
+            border-top: 1px solid #dcdcdc;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: var(--gap);
+            box-sizing: border-box;
+        }
+
+        .navigation {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--gap);
+            height: var(--button-height);
+        }
+
+        .nav-button {
+            height: 100%;
+            border: 2px solid transparent;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .nav-button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        .input-area {
+            height: var(--input-height);
+            margin-top: var(--gap);
+        }
+
+        .main-input {
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+        
+        /* Chat-specific styles, moved from old file */
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .message-senior {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message-friend {
+            background: #e9ecef;
+            color: #212529;
+            margin-right: auto;
+        }
+        .chat-sender {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        /* Styles from original rich view panel */
+        .view-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        .view-section h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+        }
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: #f1f3f5;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        @media (min-width: 768px) {
+            /* Future desktop styles can go here */
+        }
+
+        /* Popup Selector Styles */
+        .popup-selector {
+            position: absolute;
+            bottom: var(--bar-height);
+            left: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .popup-item {
+            padding: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .popup-item:hover {
+            background-color: #f0f2f5;
+        }
+        .popup-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-view" id="mainView">
+        <div id="popupSelector" class="popup-selector" style="display: none;"></div>
+        <!-- CHATT VIEW (Default) -->
+        <div id="viewChat" class="view-pane">
+            <div class="chat-message message-senior">
+                <div class="chat-sender">Astrid (Du)</div>
+                <div>Hej alla! Jag vill att vi ska göra en app som översätter kyrktjänsten</div>
+            </div>
+            <div class="chat-message message-friend">
+                <div class="chat-sender">Gunnar (Vän)</div>
+                <div>Vilken bra idé Astrid! Vi har ju många i församlingen som pratar olika språk. Jag kan hjälpa till med tekniska saker.</div>
+            </div>
+            <div class="chat-message">
+                <div class="chat-sender">AI-Rådgivare</div>
+                <div>Det låter som ett fantastiskt projekt! Låt mig hjälpa er tänka igenom detta. Vilka språk tänker ni er? Och ska det vara live-översättning eller förberedd text?</div>
+            </div>
+            <div class="chat-message message-senior">
+                <div class="chat-sender">Astrid</div>
+                <div>@AI-Rådgivare Vi behöver svenska, engelska, arabiska och somaliska. Helst live så alla kan följa med direkt.</div>
+            </div>
+             <div class="chat-message">
+                <div class="chat-sender">AI-Problemlösare</div>
+                <div>Perfekt! Jag ser en lösning: Google Cloud Speech-to-Text för svenska tal, DeepL för översättning, och en enkel webb-app. Kostnad cirka 40 kr/månad. Jules kan bygga detta!</div>
+            </div>
+            <div class="chat-message message-friend">
+                <div class="chat-sender">Gunnar</div>
+                <div>@AI-Problemlösare Det låter rimligt! Kan vi testa det först innan vi bestämmer oss?</div>
+            </div>
+        </div>
+
+        <!-- PLAN VIEW (Initially hidden) -->
+        <div id="viewPlan" class="view-pane" style="display: none;">
+            <div class="view-section">
+                <h3>Vårt gemensamma mål</h3>
+                <p>Här beskriver vi vad vi bygger tillsammans. Just nu är målet att skapa en app som <strong>översätter kyrktjänsten i realtid</strong>, så att alla i församlingen kan känna sig delaktiga, oavsett språk.</p>
+            </div>
+
+            <div class="view-section">
+                <h3>Vi som hjälper till</h3>
+                <p>Det här är teamet som arbetar med dig för att förverkliga din idé.</p>
+                <div class="team-members">
+                    <div class="team-member"><span>Astrid (Du)</span></div>
+                    <div class="team-member"><span>Gunnar (Din vän)</span></div>
+                    <div class="team-member"><span>Jules (Byggaren)</span></div>
+                    <div class="team-member"><span>AI-Rådgivare (Bollplanket)</span></div>
+                    <div class="team-member"><span>AI-Problemlösare (Fixaren)</span></div>
+                </div>
+            </div>
+
+            <div class="view-section">
+                <h3>Vår resa, steg för steg</h3>
+                <p>Här kan du följa med i arbetet och se vad som händer just nu och vad som kommer härnäst.</p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <strong>Steg 1: Grunden är lagd</strong><br>
+                        <small>Vi har byggt ett första, fungerande system för översättning.</small>
+                    </div>
+                    <div class="timeline-item">
+                        <strong>Steg 2: Lägger till fler språk</strong> (Pågår)<br>
+                        <small>Vi arbetar på att lägga till stöd för arabiska och somaliska.</small>
+                    </div>
+                    <div class="timeline-item">
+                        <strong>Steg 3: Ett vackert gränssnitt</strong><br>
+                        <small>Här kommer vi att behöva dina tankar om hur appen ska se ut och kännas.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCUMENT VIEW (Initially hidden) -->
+        <div id="viewDoc" class="view-pane" style="display: none;">
+            <h2>Dokument</h2>
+            <p>Här kommer dokumentredigeraren att visas.</p>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="navigation">
+            <button id="btnPlan" class="nav-button">Plan</button>
+            <button id="btnChat" class="nav-button active">Chatt</button>
+            <button id="btnDoc" class="nav-button">Dokument</button>
+        </div>
+        <div class="input-area">
+            <input type="text" class="main-input" placeholder="Skriv här för att chatta...">
+        </div>
+    </div>
+
+    <script>
+        // --- View Switching Logic ---
+        const mainView = document.getElementById('mainView');
+        const views = {
+            plan: document.getElementById('viewPlan'),
+            chat: document.getElementById('viewChat'),
+            doc: document.getElementById('viewDoc')
+        };
+        const buttons = {
+            plan: document.getElementById('btnPlan'),
+            chat: document.getElementById('btnChat'),
+            doc: document.getElementById('btnDoc')
+        };
+        const input = document.querySelector('.main-input');
+
+        function switchView(viewName) {
+            // Hide all views
+            for (const key in views) {
+                views[key].style.display = 'none';
+            }
+            // Deactivate all buttons
+            for (const key in buttons) {
+                buttons[key].classList.remove('active');
+            }
+
+            // Show the selected view and activate its button
+            views[viewName].style.display = 'block';
+            buttons[viewName].classList.add('active');
+            
+            // Update input placeholder based on context
+            if (viewName === 'chat') {
+                input.placeholder = 'Skriv här för att chatta...';
+            } else if (viewName === 'plan') {
+                input.placeholder = 'Sök eller filtrera i planen...';
+            } else if (viewName === 'doc') {
+                input.placeholder = 'Sök eller redigera i dokumentet...';
+            }
+        }
+
+        buttons.plan.addEventListener('click', () => switchView('plan'));
+        buttons.chat.addEventListener('click', () => switchView('chat'));
+        buttons.doc.addEventListener('click', () => switchView('doc'));
+
+        // --- Chat Simulation Logic ---
+        let messageCount = 0;
+        const participants = {
+            'gunnar': { name: 'Gunnar (Vän)', class: 'message-friend' },
+            'ai-advisor': { name: 'AI-Rådgivare', class: '' },
+            'ai-solver': { name: 'AI-Problemlösare', class: '' },
+        };
+        const responses = [
+            { from: 'ai-advisor', message: 'Bra fråga! Har ni tänkt på hur ljudkvaliteten är i kyrkan? Det kan påverka hur bra översättningen blir.' },
+            { from: 'gunnar', message: 'Jag kan kolla ljudsystemet i kyrkan. Vi har ganska bra mikrofoner redan.' },
+            { from: 'ai-solver', message: 'Perfekt! Med bra mikrofoner blir Google Cloud Speech-to-Text mycket mer exakt. Jules kan börja med grundsystemet redan nu.' }
+        ];
+
+        function sendMessage() {
+            const message = input.value.trim();
+            if (message) {
+                addChatMessage('senior', 'Astrid (Du)', message);
+                input.value = '';
+
+                setTimeout(() => {
+                    const response = responses[messageCount % responses.length];
+                    const participant = participants[response.from];
+                    if (participant) {
+                        addChatMessage(response.from, participant.name, response.message);
+                    }
+                    messageCount++;
+                }, 1000 + Math.random() * 1500);
+            }
+        }
+
+        function addChatMessage(type, sender, message) {
+            const messagesContainer = document.getElementById('viewChat');
+            const messageDiv = document.createElement('div');
+            
+            let className = 'chat-message';
+            if (type === 'senior') {
+                className += ' message-senior';
+            } else if (participants[type] && participants[type].class) {
+                className += ` ${participants[type].class}`;
+            }
+            
+            messageDiv.className = className;
+            messageDiv.innerHTML = `<div class="chat-sender">${sender}</div><div>${message}</div>`;
+            
+            messagesContainer.appendChild(messageDiv);
+            mainView.scrollTop = mainView.scrollHeight;
+        }
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('viewChat').style.display === 'block') {
+                sendMessage();
+            }
+        });
+
+        // --- Popup Selector Logic ---
+        const popupSelector = document.getElementById('popupSelector');
+        const DUMMY_PEOPLE = ['Astrid', 'Gunnar', 'Jules', 'AI-Rådgivare', 'AI-Problemlösare'];
+        const DUMMY_DOCS = ['Projektplan.md', 'Mötesanteckningar.txt', 'Idéer.docx', 'Budget.xlsx'];
+
+        input.addEventListener('input', (e) => {
+            const text = e.target.value;
+            const lastWord = text.split(' ').pop();
+
+            if (lastWord.startsWith('@')) {
+                const query = lastWord.substring(1).toLowerCase();
+                const filtered = DUMMY_PEOPLE.filter(p => p.toLowerCase().includes(query));
+                renderPopup(filtered, '@');
+            } else if (lastWord.startsWith('#')) {
+                const query = lastWord.substring(1).toLowerCase();
+                const filtered = DUMMY_DOCS.filter(d => d.toLowerCase().includes(query));
+                renderPopup(filtered, '#');
+            } else {
+                popupSelector.style.display = 'none';
+            }
+        });
+
+        function renderPopup(items, type) {
+            if (items.length === 0) {
+                popupSelector.style.display = 'none';
+                return;
+            }
+            popupSelector.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'popup-item';
+                div.textContent = item;
+                div.onclick = () => selectPopupItem(item, type);
+                popupSelector.appendChild(div);
+            });
+            popupSelector.style.display = 'block';
+        }
+
+        function selectPopupItem(item, type) {
+            const text = input.value;
+            const words = text.split(' ');
+            words.pop(); // remove the @/# word
+            words.push(`${type}${item} `); // add the selected item
+            input.value = words.join(' ');
+            
+            popupSelector.style.display = 'none';
+            input.focus();
+        }
+
+
+        // --- Automatic Layout Logic ---
+        const layoutHandler = () => {
+            const width = window.innerWidth;
+            mainView.style.display = 'flex'; // Use flex for all layouts now
+            mainView.style.flexDirection = 'row';
+
+            // Hide all views by default
+            for (const key in views) {
+                views[key].style.display = 'none';
+            }
+
+            if (width < 768) {
+                // Mobile: Show only the last active view
+                const lastActive = activeViews[activeViews.length - 1] || 'chat';
+                views[lastActive].style.display = 'block';
+            } else if (width < 1200) {
+                // Tablet: Show last two active views
+                mainView.style.display = 'grid';
+                mainView.style.gridTemplateColumns = '1fr 1fr';
+                const lastTwo = activeViews.slice(-2);
+                if (lastTwo.length < 2 && lastTwo[0] !== 'chat') activeViews.push('chat');
+                 if (lastTwo.length < 2 && lastTwo[0] === 'chat') activeViews.push('plan');
+                
+                activeViews.slice(-2).forEach(viewName => {
+                    views[viewName].style.display = 'block';
+                });
+            } else {
+                // Desktop: Show all three views
+                mainView.style.display = 'grid';
+                mainView.style.gridTemplateColumns = '1fr 1fr 1fr';
+                for (const key in views) {
+                    views[key].style.display = 'block';
+                }
+            }
+        };
+
+        let activeViews = ['chat'];
+
+        function switchView(viewName) {
+            // Add to the history, remove if it exists to bring it to the front
+            activeViews = activeViews.filter(v => v !== viewName);
+            activeViews.push(viewName);
+
+            // Deactivate all buttons
+            for (const key in buttons) {
+                buttons[key].classList.remove('active');
+            }
+            // Activate the button for the most recent view
+            buttons[viewName].classList.add('active');
+            
+            // Update placeholder based on context
+            if (viewName === 'chat') {
+                input.placeholder = 'Skriv här för att chatta...';
+            } else if (viewName === 'plan') {
+                input.placeholder = 'Sök eller filtrera i planen...';
+            } else if (viewName === 'doc') {
+                input.placeholder = 'Sök eller redigera i dokumentet...';
+            }
+            
+            layoutHandler();
+        }
+
+        const resizeObserver = new ResizeObserver(layoutHandler);
+        resizeObserver.observe(document.body);
+
+        // Set initial view
+        layoutHandler();
+    </script>
+
+</body>
+</html>
