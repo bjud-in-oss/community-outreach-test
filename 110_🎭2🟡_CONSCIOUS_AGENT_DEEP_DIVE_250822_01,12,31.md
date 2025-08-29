@@ -4,12 +4,12 @@
 Agentens "ansikte utåt" - 100% oteknisk kommunikation med seniorer
 
 ## 🧠 **ARKITEKTUR**
-Baserat på 31_🧠_DUAL_CONSCIOUSNESS_ARCHITECTURE.md
+Baserat på 131_🧠_DUAL_CONSCIOUSNESS_ARCHITECTURE.md
 
 ### **Komponenter:**
-- Empathy Engine (Groq-baserad emotionell motor)
+- **Empathy Engine (SEP-007 Driven):** En inbyggd, snabb motor (Groq-baserad) som tolkar användarens tillstånd genom den anknytningsbaserade modellen från **SEP-007**. Den identifierar inte bara ytliga känslor, utan den underliggande drivkraften (`FIGHT`, `FLIGHT`, `FIXES & FIXATION`) som svar på `Separation`. Resultatet är en intern "känslosignal" som låter agenten anpassa sin ton för att adressera grundorsaken till användarens frustration eller oro, inte bara symptomen.
 - Language Processor (Senior-språk ↔ teknisk översättning)
-- UI Components (MCP-UI komponenter för seniorer)
+- **UI Components:** Använder UI-komponenter definierade i `113_🎨1🟢_UI_STACK_SHADCN...` för att bygga ett tillgängligt och senior-vänligt gränssnitt.
 - Communication Memory (Lär sig varje seniors stil)
 
 ## 📋 **STATUS**

@@ -16,8 +16,8 @@ Baserat på advanced user analysis och conscious agent behov
 🟡 SKAPAS - Kritisk för senior-vänlig upplevelse
 
 ## 🔗 **RELATERADE DOKUMENT**
-- 40: Advanced User Analysis
-- 10: Conscious Agent Deep Dive
+- 140: Advanced User Analysis
+- 110: Conscious Agent Deep Dive
 
 ## 🚀 **NÄSTA STEG**
 1. Analysera senior-specifika UI-behov

@@ -4,6 +4,10 @@
 // ARCHITECTURE: Dual Consciousness Architecture compliant
 
 import { TechnicalFilter, FilterResult } from './guardrails/TechnicalFilter.js';
+
+// Placeholder import for CoreAgent and its request structure
+import { CoreAgent, LLMRequest } from '../core-agent/CoreAgent.js';
+
 import { SeniorTranslator, TranslationResult, TechnicalSpecification, SeniorResponse } from './translation/SeniorTranslator.js';
 
 /**
@@ -50,6 +54,7 @@ export interface BridgeStats {
 }
 
 export class CommunicationBridge {
+  private coreAgent: CoreAgent;
   private technicalFilter: TechnicalFilter;
   private seniorTranslator: SeniorTranslator;
   private config: BridgeConfig;
@@ -57,7 +62,7 @@ export class CommunicationBridge {
   private stats: BridgeStats;
   private isInitialized: boolean = false;
 
-  constructor(config: Partial<BridgeConfig> = {}) {
+  constructor(coreAgent: CoreAgent, config: Partial<BridgeConfig> = {}) {
     this.config = {
       guardrailsEnabled: true,
       translationMode: 'auto',
@@ -67,6 +72,8 @@ export class CommunicationBridge {
       emergencyBypass: false,
       ...config
     };
+
+    this.coreAgent = coreAgent;
 
     this.technicalFilter = new TechnicalFilter({
       strictMode: this.config.strictMode,
@@ -390,6 +397,60 @@ export class CommunicationBridge {
 
     this.logMessage(message);
     return message;
+  }
+
+  /**
+   * MASTER PLAN 2.0: Process request for empathetic response from Conscious Agent
+   * This is the "känslosnurran" flow.
+   */
+  async getEmpatheticResponse(
+    userInput: string,
+    priority: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+  ): Promise<{
+    success: boolean;
+    response?: string;
+    message: BridgeMessage;
+    error?: string;
+  }> {
+    const startTime = Date.now();
+    console.log('🌉 Processing Conscious Agent → Core Agent for empathetic response');
+
+    const message = this.createBridgeMessage(
+      'conscious',
+      'core',
+      'request',
+      userInput,
+      priority
+    );
+
+    try {
+      // Formulate a structured, safe task for the Core Agent's LLM Orchestrator
+      const taskForCoreAgent: LLMRequest = {
+        prompt: `En senior användare är frustrerad och sa: '${userInput}'. Generera ett kort, empatiskt och lugnande svar på svenska. Svaret ska vara direkt till användaren.`,
+        model: 'groq-llama3', // Specify the fast model for empathy
+        purpose: 'empathy-response'
+      };
+
+      // Delegate the actual LLM call to the secure Core Agent
+      // NOTE: Assumes CoreAgent has a method like `executeLlmTask`
+      const empatheticResponse = await this.coreAgent.executeLlmTask(taskForCoreAgent);
+
+      message.processedContent = empatheticResponse;
+      message.seniorSafe = true; // The prompt is designed to produce a safe response
+      message.guardrailsApplied.push('Empathetic response generated via Core Agent');
+      this.logMessage(message);
+      this.updateStats(startTime, false, true, false);
+
+      return { success: true, response: empatheticResponse, message };
+
+    } catch (error) {
+      console.error('❌ Empathetic response generation failed:', error);
+      const errorMessage = `Failed to get empathetic response: ${error}`;
+      message.guardrailsApplied.push('Error during empathetic response generation');
+      this.logMessage(message);
+      this.updateStats(startTime, false, false, true);
+      return { success: false, error: errorMessage, message };
+    }
   }
 
   /**

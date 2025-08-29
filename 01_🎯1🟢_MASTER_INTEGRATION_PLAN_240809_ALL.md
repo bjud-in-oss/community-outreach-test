@@ -2,51 +2,77 @@
 
 ## 📚 **LÄNKAD DOKUMENTARKITEKTUR**
 
-### **📋 Dokumentöversikt:**
-- **📊 [Document Index](02_📋_DOCUMENT_INDEX.md)** - Status och översikt över alla dokument
-- **🎭 [Conscious Agent Deep Dive](10_🎭_CONSCIOUS_AGENT_DEEP_DIVE.md)** - Djupanalys av medvetna rondellen *(SKAPAS)*
-- **⚙️ [Core Agent Deep Dive](11_⚙️_CORE_AGENT_DEEP_DIVE.md)** - Teknisk implementation av kärn-agent *(SKAPAS)*
-- **🌉 [Communication Bridge Deep Dive](12_🌉_COMMUNICATION_BRIDGE_DEEP_DIVE.md)** - Integration och guardrails *(SKAPAS)*
-- **🔄 [Hybrid Merge Strategy](225.1_🔄_HYBRID_MERGE_STRATEGY.md)** - v1.15 AI + Senior-godkännande *(NY REKOMMENDATION)*
+### **Filnamnssystem V2**
+**Format:** `[INDEX]_[EMOJI][STATUS]_[NAMN]_[DATUM]_[RELATIONER].md`  
+**Status:** 1🟢=AKTIV | 2🟡=SKAPAS | 3🔵=REFERENS | 4⚫=ARKIV
 
-### **🔍 Specialistkunskap & Research:**
-- **🏛️ [Church Technology Analysis](20_🏛️_CHURCH_TECHNOLOGY_ANALYSIS.md)** - Kyrkteknik och realtidsöversättning
-- **👨‍👩‍👧‍👦 [Family History Integration](22_👨‍👩‍👧‍👦_FAMILY_HISTORY_INTEGRATION_ANALYSIS.md)** - Familjehistoria web-plattform
-- **🌍 [Real-Time Translation Analysis](21_🌍_REAL_TIME_TRANSLATION_ANALYSIS.md)** - Google Cloud STT + DeepL integration
-- **📊 [Comprehensive Tools Analysis](23_📊_COMPREHENSIVE_TOOLS_ANALYSIS.md)** - 20+ gratis verktyg och plattformar
-
-### **⚙️ Steering & Säkerhet:**
-- **🔗 [Dual Consciousness Architecture](31_🧠_DUAL_CONSCIOUSNESS_ARCHITECTURE.md)** - Dokumenthantering och dual sessions
-- **📋 [Next Immediate Actions](03_📋_NEXT_IMMEDIATE_ACTIONS.md)** - Aktuella åtgärder och prioriteringar
+### **🗺️ Översikt & Navigation**
+<!-- 📊 Document Index - Status och översikt över alla dokument i systemet. Starta här för att hitta rätt. (Arkiverad) -->
 
 ---
 
-## 🔄 **HYBRID MERGE STRATEGY - REKOMMENDERAD LÖSNING**
+## ❤️ **Core Psychological Model: Attachment-Based Drives (SEP-007)**
+Systemets beteende styrs av en fundamental psykologisk modell baserad på **anknytningsteori**. Detta är kärnan i hur agenterna, särskilt `Coordinator Agent`, förstår och reagerar på användarens behov.
 
-### **🎯 Intelligent AI + Senior-Kontroll**
-**Kärnkoncept:** v1.15 AI gör alla tekniska beslut → Samlar till "Release Candidate" → Senior godkänner slutprodukt
+-   **Primary Axis: Closeness vs. Separation:** All motivation härleds från en strävan efter `Closeness` (kontakt, förståelse, slutförande) och att överbrygga `Separation` (hinder, förvirring, avstånd till målet).
 
-```typescript
-// Hybrid-flöde för senior-vänlig utveckling
-const hybridMergeFlow = {
-  phase1: "v1.15 AI processar alla tekniska ändringar (dolt från senior)",
-  phase2: "AI skapar Release Candidate med senior-vänlig sammanfattning", 
-  phase3: "Senior ser bara: 'Ny version redo - godkänn?' med visuell demo",
-  phase4: "Senior väljer: Godkänn/Testa först/Behåll nuvarande/Schemalägg"
-};
-```
+-   **The Three Adaptive Drives:** Istället för att bara reagera på ytliga känslor, tolkar systemet användarens tillstånd som en av tre adaptiva strategier för att hantera `Separation`:
+    1.  **`FIXES & FIXATION` (Pursuit):** Den proaktiva, konstruktiva drivkraften att arbeta för att överbrygga ett gap och uppnå `Closeness`. Detta är systemets standardläge.
+    2.  **`FIGHT` (Frustration):** En reaktion på att strävan (`Pursuit`) blockeras. Agenten identifierar och försöker eliminera hindret.
+    3.  **`FLIGHT` (Alarm):** En reaktion på att separationen känns överväldigande. Agenten prioriterar trygghet, skapar distans och omvärderar strategin.
 
-**🟢 Fördelar:**
-- **AI-intelligens**: v1.15 fattar alla tekniska beslut automatiskt
-- **Senior-kontroll**: Godkänner slutprodukt utan tekniska detaljer
-- **Flytande gräns**: 1-100 ändringar samlas till en godkännande-session
-- **Batch-flexibilitet**: Tidsbaserat, funktionsbaserat eller riskbaserat
-- **Säkerhet**: Automatiska guardrails + mänsklig final approval
+Denna modell möjliggör en djupare, mer empatisk interaktion där agenten adresserar grundorsaken till ett problem (t.ex. känslan av separation från ett meningsfullt mål) istället för att bara behandla symptomen (t.ex. frustration över ett tekniskt fel).
+
+**📋 Relaterat dokument:**
+- SEP-007: Definitive Model of the Core Attachment-Based Drives - Den kanoniska definitionen av modellen.
+
+
+### **⚙️ Steering & Säkerhet:**
+
+---
+
+## 🏛️ **Multi-Agent System (Team of Agents) Architecture**
+Systemet har utvecklats från en "Dual Consciousness"-modell till ett mer sofistikerat **team av specialiserade agenter**. Varje agent har en tydlig roll, ett eget minne (RAG) och använder den LLM som är bäst lämpad för uppgiften. Detta skapar ett robust och resurseffektivt system.
+
+1.  **Conscious Agent (Medvetna Rondellen):**
+    -   **Roll:** Systemets ansikte utåt. Hanterar all kommunikation med seniorer på ett empatiskt och 100% otekniskt sätt.
+    -   **Fokus:** Användarupplevelse, förtroende och tydlighet.
+    -   **Komponent:** Innehåller en `Empathy Engine` (driven av en snabb LLM som Groq) som analyserar känslor och anpassar agentens ton och beteende i realtid.
+
+2.  **Coordinator Agent (f.d. Communication Bridge):**
+    -   **Roll:** Systemets strategiska hjärna. Tar emot övergripande mål från `Conscious Agent`, skapar en strategisk plan och delegerar konkreta uppgifter.
+    -   **Fokus:** Långsiktig planering, uppgiftsnedbrytning och orkestrering av andra agenter.
+    -   **LLM:** Snabb och billig (t.ex. Gemini Flash) för logistik och routing.
+
+
+3.  **Core Agent (Teknisk Specialist):**
+    -   **Roll:** "Arbetshästen" som utför de tekniska uppgifterna. Den är en ren exekveringsmotor som följer instruktioner från `Coordinator Agent`.
+    -   **Fokus:** Taktisk exekvering via en **ReAct-loop (Reason-Act-Observe)**. Den agerar, observerar resultatet och anpassar sig för att lösa den specifika uppgiften.
+    -   **LLM:** Använder en central `LLM Orchestration Layer` för att intelligent välja den mest kostnadseffektiva LLM:en (t.ex. Gemini Pro för kod, Gemini Flash för enklare logik) för varje anrop.
+    -   **Verktyg:** Använder en verktygslåda med `Composio`, `jules`, `ShellTool` etc. för att interagera med externa system.
+
+4.  **Assistent-Agenter (Specialiserade Hjälpredor):**
+    -   **Roll:** Experter som anropas av `Coordinator Agent` för specifika behov.
+    -   **Exempel:**
+        -   **`MemoryAssistant`:** Hämtar och förbereder exakt rätt kontext från olika minnen.
+        -   **`PlanningAssistant`:** Skapar detaljerade, steg-för-steg-planer.
+        -   **`SelfReflectionAssistant` (Strategiska Agenten):** Analyserar systemets prestanda och tidigare interaktioner för att föreslå långsiktiga, strategiska förbättringar.
+    -   **LLM:** Varierar beroende på uppgift (Flash för snabb datahämtning, Pro för djup analys).
+
+Denna team-baserade arkitektur säkerställer att dyra LLM-anrop (Gemini Pro) endast görs när uppgiften är väl förberedd och validerad av billigare agenter, vilket maximerar både kvalitet och kostnadseffektivitet. Kommunikationen flödar primärt via `Coordinator Agent` för att upprätthålla ordning och strategi.
+
+### **🎯 Godkännande & Kollaboration: Hybrid Merge Strategy**
+**Kärnkoncept:** Medan agent-teamet utför det tekniska arbetet, används **Hybrid Merge Strategy** som mönster för att hantera godkännanden och kollaboration på ett senior-vänligt sätt.
+
+- **AI-drivna Merges:** `Core Agent` använder den intelligenta merge-logiken från v1.15 för att tekniskt slå samman kod, oavsett om den kommer från en agent eller från flera mänskliga kollaboratörer (t.ex. en senior och en vän).
+- **Senior-vänlig Preview:** `Coordinator Agent` och `Conscious Agent` arbetar tillsammans för att omvandla de tekniska ändringarna till en "Release Candidate". Denna presenteras som en enkel, visuell förhandsgranskning i Senior Cockpit, helt utan teknisk jargong.
+- **Kollaborativt Arbete:** Denna modell är perfekt för parallellt arbete. Bidrag från flera personer (senior, vänner, familj) behandlas som "ändringar" som systemet intelligent slår samman och presenterar som ett enhetligt resultat för godkännande. Detta möjliggör den sociala och kollaborativa visionen från "Spårvagns-metaforen".
 
 **📋 Relaterade dokument:**
-- **🔄 [Hybrid Merge Strategy](225.1_🔄_HYBRID_MERGE_STRATEGY.md)** - Detaljerad implementation
-- **🤖 [v1.15 Intelligent Merge System](v1.15_🤖_INTELLIGENT_MERGE_SYSTEM.md)** - AI-grund
-- **🔄 [Preview Merge Strategy](225_🔄_PREVIEW_MERGE_STRATEGY.md)** - Alternativ för utvecklare
+- 🔄 [Hybrid Merge Strategy](225.1_🔄_HYBRID_MERGE_STRATEGY.md) - Detaljerad implementation
+- 🤖 [v1.15 Intelligent Merge System](075_🔄3🔵_V1_15_INTELLIGENT_MERGE_SYSTEM_REFERENCE_240808_30,04.md) - AI-grund (Reaktiverat)
+- 🔄 Preview Merge Strategy - Alternativ för utvecklare
+- 🚋 [Parallell Utveckling Analys](107_🚋1🟢_PARALLELL_UTVECKLING_ANALYS_250814_106.md) - Visionen för kollaboration
 
 ---
 
@@ -55,34 +81,35 @@ const hybridMergeFlow = {
 ### **A) Teknisk Implementation** ⚙️
 **Kärnmål:** Slutför core-agent/tools/jules-tool integration
 
-**Fördjupande Analyser:**
-- 🏛️ [Church Technology Analysis](20_🏛️_CHURCH_TECHNOLOGY_ANALYSIS.md) - PowerShell, Tesira, Zoom automation
-- 🌍 [Real-Time Translation Analysis](21_🌍_REAL_TIME_TRANSLATION_ANALYSIS.md) - Google Cloud STT + DeepL integration  
-- 👨‍👩‍👧‍👦 [Family History Integration Analysis](22_👨‍👩‍👧‍👦_FAMILY_HISTORY_INTEGRATION_ANALYSIS.md) - Python → Web API transformation
-- 📊 [Comprehensive Tools Analysis](23_📊_COMPREHENSIVE_TOOLS_ANALYSIS.md) - 20+ verktyg för multi-platform development
+**Status & Fördjupning:**
+- **Nästa Fokus:** Kräver `requirements -> design -> tasks` innan implementation kan påbörjas.
+- 🏛️ [Church Technology Analysis](220_🏛️_CHURCH_TECHNOLOGY_ANALYSIS.md) - Kyrkteknik och realtidsöversättning
+- 👨‍👩‍👧‍👦 [Family History Integration Analysis](222_👨‍👩‍👧‍👦_FAMILY_HISTORY_INTEGRATION_ANALYSIS.md) - Familjehistoria web-plattform
+- 🌍 [Real-Time Translation Analysis](221_🌍_REAL_TIME_TRANSLATION_ANALYSIS.md) - Google Cloud STT + DeepL integration
+- 📊 [Comprehensive Tools Analysis](223_📊_COMPREHENSIVE_TOOLS_ANALYSIS.md) - 20+ gratis verktyg och plattformar
+
 
 ### **B) GitHub Repository Diskussion** 📂
 **Kärnmål:** Diskutera repo-placering, CI/CD setup
 
 **Fördjupande Analyser:**
-- 🔧 [Kiro Development Strategy](30_🔧_KIRO_DEVELOPMENT_STRATEGY.md) - Utvecklingsverktyg vs slutprodukt
+- 🔧 [Kiro Development Strategy](130_🔧_KIRO_DEVELOPMENT_STRATEGY.md) - Utvecklingsverktyg vs slutprodukt
 - 📋 [Setup Instructions](06_⚙️_SETUP_INSTRUCTIONS.md) - Repository konfiguration och automation
 - ⚙️ setup-documentation-system.js - Automatiserad dokumentationsladdning
 
 ### **C) Kiro Development Workflow** 🔧
-**Kärnmål:** Specs och Hooks för Master Plan 2.0
+**Status:** ✅ Slutförd.
+- **Resultat:** Denna länkade dokumentarkitektur och `file-creation-guide.md` är resultatet av detta arbete.
 
-**Fördjupande Analyser:**
-- 🧠 [Dual Consciousness Architecture](31_🧠_DUAL_CONSCIOUSNESS_ARCHITECTURE.md) - Säker dual sessions workflow
-- 📚 [Document Index](02_📋_DOCUMENT_INDEX.md) - Länkad arkitektur och trigger-system
-- 📋 [Next Immediate Actions](03_📋_NEXT_IMMEDIATE_ACTIONS.md) - Chat vs Specs lägen
-- 🎯 [Phase Planning Framework](32_🎯_PHASE_PLANNING_FRAMEWORK.md) - Fasbaserad utveckling och migration
+- 🎯 [Phase Planning Framework](132_🎯_PHASE_PLANNING_FRAMEWORK.md) - Fasbaserad utveckling och migration
 
 ### **D) Senior-Vänlig Design** 🎭
-**Kärnmål:** Medvetna Rondellen, senior-friendly UI
+**Status:** 🟡 Pågående utvärdering.
+- **Kärnmål:** Medvetna Rondellen, senior-friendly UI.
+- **Utvärdering:** TDD (Test-Driven Development) utvärderas som en metod för att säkerställa kvalitet i både UI och backend-logik.
 
 **Fördjupande Analyser:**
-- 👥 [Advanced User Analysis](40_👥_ADVANCED_USER_ANALYSIS.md) - PWA och multi-platform för seniorer
+- 👥 [Advanced User Analysis](140_👥_ADVANCED_USER_ANALYSIS.md) - PWA och multi-platform för seniorer
 - 🎭 Conscious Agent komponenter (spridda i andra dokument)
 - 🌉 Communication Bridge design för senior-säkerhet och guardrails
 
@@ -99,8 +126,63 @@ Senior säger: "Jag vill att alla ska förstå vår kyrktjänst"
 DIY-plattformen:
 1. Medvetna Rondellen förstår: "Översättning för kyrkan"
 2. Kärn-agenten väljer: Google Cloud STT + DeepL + Zoom CC
-3. Platform Selector: Realtids-webapp (40 kr/månad)
-4. Jules genererar: Komplett översättningssystem
+
+@@ -86,7 +86,7 @@
+1. Medvetna Rondellen förstår: "Automatisera kyrkteknik"
+2. Kärn-agenten väljer: PowerShell + Tesira TCP + Zoom API
+3. Platform Selector: Windows desktop script (gratis)
+4. Kärn-agenten genererar: PowerShell automation med senior-vänlig feedback
+5. Senior får: "En knapp startar allt"-lösning
+
+@@ -115,7 +115,7 @@
+2. Gunnar accepterar inbjudan och bidrar med sina foton
+3. Båda väljer layout och berättelser tillsammans (arbetsuppdelning)
+4. Systemet föreslår: "Astrid väljer foton, Gunnar skriver berättelser"
+5. Systemet kombinerar allt till en professionell PDF (beprövad merge-process)
+6. Resultat: Gemensam familjebok som båda är stolta över
+
+@@ -201,7 +201,7 @@
+  filsystem: {
+    medvetenAgent: "Senior-synlig struktur med projekt/planer/framsteg",
+    omedvetenAgent: "Teknisk struktur med fas-baserade specs och hierarkiska tasks",
+    earsSystem: "Översättningslager mellan medveten/omedveten", 
+    communicationBridge: "Säker kommunikation och guardrails"
+  },
+  nyckelfunktioner: [
+@@ -209,7 +209,7 @@
+    "Hierarkiska tasks med egen requirements/design/tasks struktur",
+    "Delegering till Kärn-agenten med asynkron progress-rapportering",
+    "Onboarding-integration (tekniskt men senior-vänligt)",
+    "EARS-driven automatisk task-uppdelning"
+  ],
+@@ -217,7 +217,7 @@
+    "Repository struktur skapad enligt fas-baserat system",
+    "EARS kan generera hierarkiska tasks automatiskt",
+    "Kärn-agenten kan delegeras subtasks asynkront",
+    "Onboarding-system fungerar senior-vänligt",
+    "Communication Bridge filtrerar teknisk information"
+  ]
+@@ -231,7 +231,7 @@
+    "SeniorViewService - Backend For Frontend för intelligent filtrering ✅",
+    "Förbättrad SeniorTranslator - Kontextmedveten summering ✅",
+    "PhaseVisualizer - Visuell Crawl/Walk/Run/Fly progression ✅",
+    "Kärn-agenten - Integration med kodgenererings-API:er (t.ex. Gemini)",
+    "Platform Selector - Intelligent teknikval"
+  ],
+  implementerat: [
+@@ -262,7 +262,7 @@
+    "2. AI genererar EARS-requirements automatiskt", 
+    "3. Vid kollaboration: Konsensus-beslut om funktioner och uppdelning",
+    "4. Teknisk ledare granskar och godkänner",
+    "5. Senior(er) får bekräftelse: 'Vi har förstått och börjar bygga!'", 
+    "6. Progress visas automatiskt i cockpit för alla deltagare",
+    "7. Systemet sätter ihop kollaborativt arbete med samma merge-logik"
+  ],
+  testWith: "Komplett workflow från användarplan till färdig app (individuellt & kollaborativt)",
+  success: "Senior kan gå från idé till godkänd implementation på minuter, ensam eller med vänner",
+
+3. Platform Selector: Realtids-webapp (40 kr/månad) 
+4. Kärn-agenten genererar: Komplett översättningssystem
 5. Senior får: Färdig app som översätter live
 ```
 

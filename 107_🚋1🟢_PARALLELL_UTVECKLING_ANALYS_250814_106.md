@@ -294,4 +294,3 @@ När Astrid väntar → Systemet föreslår: "Vill du hjälpa Gunnar välja bild
 
 **Parallell Utveckling Analys slutförd:** 2025-08-14  
 **Status:** 🚋 REDO FÖR PROTOTYPE-UTVECKLING  
-**Nästa:** BYGG SPÅRVAGNS-PROTOTYP 🛠️
