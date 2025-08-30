@@ -1,7 +1,7 @@
 // MASTER PLAN 2.0: Real-Time Church Translation System
 // Realtidsöversättning för kyrktjänster med Zoom CC integration
 
-import { SeniorUserProfile } from '../../../shared/types.js';
+import { SeniorUserProfile } from '../../../../shared/types.js';
 
 export interface TranslationConfig {
     sourceLanguage: 'sv-SE';

@@ -1,7 +1,7 @@
 // MASTER PLAN 2.0: Church PowerShell Automation Generator
 // Skapar PowerShell scripts för kyrkteknik automation
 
-import { SeniorUserProfile } from '../../../shared/types.js';
+import { SeniorUserProfile } from '../../../../shared/types.js';
 
 export interface ChurchAutomationRequest {
   type: 'zoom-setup' | 'tesira-control' | 'presentation-auto' | 'system-config';

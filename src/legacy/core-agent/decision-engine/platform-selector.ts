@@ -1,7 +1,7 @@
 // MASTER PLAN 2.0: Intelligent Platform Selector
 // Väljer optimal plattform och verktyg baserat på senior-behov
 
-import { SeniorUserProfile, EmotionalResponse } from '../../shared/types.js';
+import { SeniorUserProfile, EmotionalResponse } from '../../../shared/types.js';
 
 export interface PlatformAnalysis {
   complexity: 'simple' | 'medium' | 'advanced';

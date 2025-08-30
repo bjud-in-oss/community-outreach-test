@@ -23,7 +23,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/conscious-agent/*": ["./src/conscious-agent/*"],
-      "@/core-agent/*": ["./src/core-agent/*"],
+      "@/core-agent/*": ["src/legacy/core-agent/*"],
       "@/communication-bridge/*": ["./src/communication-bridge/*"],
       "@/infrastructure/*": ["./src/infrastructure/*"],
       "@/legacy-import/*": ["./src/legacy-import/*"],
@@ -48,7 +48,7 @@
     "dist",
     ".next",
     "jules-automation-test/node_modules",
-    "src/core-agent/tools/church-automation/powershell-generator.ts",
-    "src/core-agent/tools/church-automation/real-time-translator.ts"
+    "src/legacy/core-agent/tools/church-automation/powershell-generator.ts",
+    "src/legacy/core-agent/tools/church-automation/real-time-translator.ts"
   ]
 }
